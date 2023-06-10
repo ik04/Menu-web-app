@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class DealController extends Controller
 {
@@ -21,7 +22,9 @@ class DealController extends Controller
         $validated = $validation->validated();
         $deal = Deal::create([
             "value" => $validated["value"],// * value is in percentage
-            "duration" => $validated["duration"] // * duration is in hours
+            "duration" => $validated["duration"], // * duration is in hours
+            "deal_uuid" => Uuid::uuid4()
+            
         ]);
         
         return response()->json(["deal"=>$deal,"message" => "Deal has been added!"],201);
@@ -35,7 +38,6 @@ class DealController extends Controller
         if (!isset($requestData['deals'])) {
             return response()->json(['message' => 'Invalid request data. Missing "data" key.'], 400);
         }
-
 
         // ! request payload format
         // {
@@ -59,7 +61,8 @@ class DealController extends Controller
         foreach ($validated['deals'] as $dealData) {
             $record = Deal::create([
                 "value" => $dealData['value'],
-                "duration" => $dealData['duration']
+                "duration" => $dealData['duration'],
+                "deal_uuid" => Uuid::uuid4()
             ]);
 
             $deals[] = $record;

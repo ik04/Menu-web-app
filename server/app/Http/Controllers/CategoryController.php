@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class CategoryController extends Controller
 {
@@ -22,7 +23,7 @@ class CategoryController extends Controller
         $validated = $validation->validated();
         $santiziedCategory = strtolower($validated["name"]);
         $category = Category::create(["name"=>$santiziedCategory,
-        "description"=>$validated["description"]]);
+        "description"=>$validated["description"],"category_uuid" => Uuid::uuid4()]);
         return response()->json(['category'=>$category,"message"=>"category added"]);
     }
 
@@ -47,7 +48,7 @@ class CategoryController extends Controller
 
         foreach($validated["categories"] as $category){
             $santiziedCategory = strtolower($category["name"]);
-            $record = Category::create(["name" => $santiziedCategory,"description" => $category["description"]]);
+            $record = Category::create(["name" => $santiziedCategory,"description" => $category["description"],"category_uuid" => Uuid::uuid4()]);
             $categories[] = $record; 
         }
 

@@ -13,6 +13,7 @@ class Item extends Model
         "image",
         "price",
         "deal_id",
-        "category_id"
+        "category_id",
+        "item_uuid"
     ];
 }

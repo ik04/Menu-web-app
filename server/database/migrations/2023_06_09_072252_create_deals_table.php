@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer("value");
             $table->integer("duration"); //* schedule null after duration (interms of days, for now)
+            $table->uuid("deal_uuid")->unique();
             $table->timestamps();
         });
     }

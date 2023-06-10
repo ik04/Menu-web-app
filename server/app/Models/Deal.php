@@ -10,7 +10,8 @@ class Deal extends Model
     use HasFactory;
     protected $fillable = [
         "value",
-        "duration"
+        "duration",
+        "deal_uuid"
 
     ];
 }

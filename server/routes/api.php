@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +30,6 @@ Route::post("v1/add-deals",[DealController::class,"addDeals"]); // * add multipl
 Route::get("v1/get-deals",[DealController::class,"getDeals"]);
 
 // * ITEM ROUTES
+Route::post("v1/add-item",[ItemController::class,"addItem"]); 
+
+// * ORDER ROUTES

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("price");
             $table->string("deal_id");
             $table->string("category_id");
+            $table->uuid("item_uuid")->unique();
             $table->timestamps();
         });
     }
