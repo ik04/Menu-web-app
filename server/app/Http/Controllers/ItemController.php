@@ -36,7 +36,7 @@ class ItemController extends Controller
             "name"=>"required|string",
             "image"=>"required|mimes:png,jpeg,jpg",
             "price"=>"required|integer", // * inr
-            "deal_uuid"=>"uuid|nullable",
+            "deal_uuid"=>"uuid|nullable", 
             "category_uuid"=>"required|uuid"]);
 
             if($validation->fails()){
@@ -50,15 +50,6 @@ class ItemController extends Controller
                 return response()->json(["error" => "invalid Category UUID"], 400);
             }
             
-            try{
-                $actualDealId = $this->getDealId($validated["deal_uuid"]);
-            } catch(Exception $e){
-                return response()->json(["error" => "invalid Deal UUID"], 400);
-
-            }
-
-
-
             if($request->has('image')){
                 try{
                     $image = $request->file('image');
@@ -70,6 +61,26 @@ class ItemController extends Controller
                    return $e->getMessage();
                 }
             }
+            
+            if($request->has('deal_uuid')){
+                try{
+                    $actualDealId = $this->getDealId($validated["deal_uuid"]);
+                    $item = Item::create([
+                        "name" => $validated["name"],
+                        "image" => $url,
+                        "price" => $validated["price"],
+                        "deal_id" => $actualDealId,
+                        "category_id" => $actualCategoryId,
+                        "item_uuid" => Uuid::uuid4()
+                    ]);
+                   
+                    return response()->json(["item"=>$item,"message"=>"The item has been added!"]); // ! don't return item or remove id parts
+                    
+                } catch(Exception $e){
+                    return response()->json(["error" => "invalid Deal UUID"], 400);
+                }
+            }
+
 
             // ? find the base64 method for sending images (for future)
 
@@ -77,11 +88,10 @@ class ItemController extends Controller
                 "name" => $validated["name"],
                 "image" => $url,
                 "price" => $validated["price"],
-                "deal_id" => $actualDealId,
                 "category_id" => $actualCategoryId,
                 "item_uuid" => Uuid::uuid4()
             ]);
-            return response()->json(["item"=>$item,"message"=>"The item has been added!"]); // ! don't return item or remove id parts
+            return response()->json(["item"=>$item,"message"=>"The item has been added! (no deal)"]); // ! don't return item or remove id parts
         }
 
         public function getItems(Request $request){

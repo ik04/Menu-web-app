@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
 
-use function PHPUnit\Framework\isNull;
 
 class OrderController extends Controller
 {
@@ -43,20 +42,19 @@ class OrderController extends Controller
         return response()->json(["order_uuid"=>$order->order_uuid,"message"=>"order has been created!"],201);
     }
 
-    public function priceOfOrder($order_uuid){
-        $order = Order::where("order_uuid",$order_uuid)->first();
+    public function priceOfOrder($order_id){
+        $order = Order::where("id",$order_id)->first();
 
         $item_id = $order->item_id;
         $item_quantity = $order->quantity;
         $item = Item::where("id",$item_id)->first();
         $item_deal_id = $item->deal_id;
+        $item_price = $item->price;
 
-        if(!isNull($item_deal_id)){
-            $item_details = Item::join("deals","items.deal_id","=","deals.id")->get(["price","value"])->where("items.id",$item_id);
-            $item_price = $item_details->price;
-            $item_deal_value = $item_details->value;
+        if(!is_null($item_deal_id)){
+            $deal = Deal::where("id",$item_deal_id)->first();
+            $item_deal_value = $deal->value;
             $item_final_price = $item_quantity * ($item_price - ($item_price*($item_deal_value/100)));
-
             return $item_final_price;            
         }
         else{
@@ -64,20 +62,40 @@ class OrderController extends Controller
             $item_final_price = $item_quantity * $item_price;
             return $item_final_price;
         }
-        //! use joins not individual calls $item_price = $item->price;
-        //? but why?
+        //? use joins not individual calls $item_price = $item->price, what's the better implementation?
         // todo: implement a function to delete records after expiration of duration
     }
 
-    public function processOrder(Request $request){
+    public function checkoutOrder(Request $request){
         //* this will be called when the client presses proceed to checkout
         $validation = Validator::make($request->all(),[
             "order_uuid" => "required|uuid",
         ]);
         $validated = $validation->validated();
 
-        $total_price = $this->priceOfOrder($validated["order_uuid"]);
-        return response()->json(["total_price" => $total_price],200);
+
+
+        $order = Order::where("order_uuid",$validated)->first();
+
+        
+        
+
+
+        if($order && !is_null($order->id)){
+
+            $total_price = $this->priceOfOrder($order->id);
+            $order->total_price = $total_price;
+
+            return response()->json(["order"=>$order],200);
+
+
+        }else{
+            return response()->json(["error"=>"Record not found or Invalid Uuid"]);
+        }
+        // todo: run tests and update checks
+        
+        
+        
         
     }
         

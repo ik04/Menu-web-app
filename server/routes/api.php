@@ -37,6 +37,6 @@ Route::get("/v1/get-items",[ItemController::class,"getItems"]);
 
 // * ORDER ROUTES
 Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
-Route::post("/v1/");
+Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
 
 // todo: admin/moderator to interact with the addition routes
