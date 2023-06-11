@@ -92,7 +92,7 @@ class OrderController extends Controller
     }
 
     
-    public function finishOrder(Request $request)
+    public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
     {
         $validation = Validator::make($request->all(), [
             "order_uuid" => "required|uuid",
