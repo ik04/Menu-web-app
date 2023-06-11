@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name");
             $table->string("image");
             $table->string("price");
-            $table->string("deal_id");
+            $table->string("deal_id")->nullable();
             $table->string("category_id");
             $table->uuid("item_uuid")->unique();
             $table->timestamps();

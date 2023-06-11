@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/v1/healthcheck",[ItemController::class,"healthCheck"]);
 
 // * CATEGORY ROUTES
 Route::post("/v1/add-category",[CategoryController::class,"addCategory"]);  
@@ -31,5 +33,10 @@ Route::get("v1/get-deals",[DealController::class,"getDeals"]);
 
 // * ITEM ROUTES
 Route::post("v1/add-item",[ItemController::class,"addItem"]); 
+Route::get("/v1/get-items",[ItemController::class,"getItems"]);
 
 // * ORDER ROUTES
+Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
+Route::post("/v1/");
+
+// todo: admin/moderator to interact with the addition routes

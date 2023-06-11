@@ -9,10 +9,12 @@ class Order extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "items",
+        "item_id",
+        "quantity",
+        "order_uuid",
+        "status"
         // "user"
-        //* can add user in the order itself,
-        "total",
-        "uuid"
+        //* if user is added, they'll show up directly in the order
+
     ];
 }

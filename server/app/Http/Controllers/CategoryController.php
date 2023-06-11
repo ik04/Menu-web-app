@@ -18,8 +18,6 @@ class CategoryController extends Controller
         if($validation->fails()){
             return response()->json($validation->errors()->all(),400);
         }
-
-        
         $validated = $validation->validated();
         $santiziedCategory = strtolower($validated["name"]);
         $category = Category::create(["name"=>$santiziedCategory,
