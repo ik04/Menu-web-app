@@ -20,6 +20,15 @@ class DealController extends Controller
         }
         
         $validated = $validation->validated();
+        
+        $existingDeal = Deal::where('value', $validated['value'])
+        ->where('duration', $validated['duration'])
+        ->first();
+
+    if ($existingDeal) {
+        return response()->json(["message" => "Deal with the same value and duration already exists!"], 409);
+    }
+    
         $deal = Deal::create([
             "value" => $validated["value"],// * value is in percentage
             "duration" => $validated["duration"], // * duration is in hours
@@ -36,7 +45,7 @@ class DealController extends Controller
         $requestData = $request->all();
 
         if (!isset($requestData['deals'])) {
-            return response()->json(['message' => 'Invalid request data. Missing "data" key.'], 400);
+            return response()->json(['message' => 'Invalid request data. Missing "deals" key.'], 400);
         }
 
         // ! request payload format
@@ -59,12 +68,17 @@ class DealController extends Controller
         $deals = [];
 
         foreach ($validated['deals'] as $dealData) {
+
+            if($existingDeal = Deal::where('value', $dealData['value'])
+            ->where('duration', $dealData['duration'])
+            ->first()){
+                continue;
+            }
             $record = Deal::create([
                 "value" => $dealData['value'],
                 "duration" => $dealData['duration'],
                 "deal_uuid" => Uuid::uuid4()
             ]);
-
             $deals[] = $record;
         }
 
