@@ -38,5 +38,8 @@ Route::get("/v1/get-items",[ItemController::class,"getItems"]);
 // * ORDER ROUTES
 Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
 Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
+Route::post("/v1/finish-order",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
+
+
 
 // todo: admin/moderator to interact with the addition routes

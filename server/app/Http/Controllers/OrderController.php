@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Status;
 use App\Models\Deal;
 use App\Models\Item;
 use App\Models\Order;
@@ -73,31 +74,46 @@ class OrderController extends Controller
         ]);
         $validated = $validation->validated();
 
-
-
         $order = Order::where("order_uuid",$validated)->first();
-
-        
-        
-
 
         if($order && !is_null($order->id)){
 
             $total_price = $this->priceOfOrder($order->id);
             $order->total_price = $total_price;
+            $order->save();
 
             return response()->json(["order"=>$order],200);
 
 
         }else{
-            return response()->json(["error"=>"Record not found or Invalid Uuid"]);
+            return response()->json(["error"=>"Record not found or Invalid Uuid",400]);
         }
         // todo: run tests and update checks
-        
-        
-        
-        
     }
+
+    
+    public function finishOrder(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            "order_uuid" => "required|uuid",
+        ]);
+        $validated = $validation->validated();
+    
+        $order = Order::where("order_uuid", $validated)->first();
+        if ($order && !is_null($order->id)) {
+            if (is_null($order->total_price)) {
+                return response()->json(["error" => "Total price is not available, Order is not checked-out"], 400);
+            }
+    
+            $order->status = Status::COMPLETE->value;
+            $order->save();
+    
+            return response()->json(["order" => $order], 200);
+        } else {
+            return response()->json(["error" => "Record not found or Invalid Uuid"], 400);
+        }
+    }
+    
         
 
         
