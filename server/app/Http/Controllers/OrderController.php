@@ -43,25 +43,25 @@ class OrderController extends Controller
         return response()->json(["order_uuid"=>$order->order_uuid,"message"=>"order has been created!"],201);
     }
 
-    public function priceOfOrder($order_id){
-        $order = Order::where("id",$order_id)->first();
+    public function priceOfOrder($orderId){
+        $order = Order::where("id",$orderId)->first();
 
-        $item_id = $order->item_id;
-        $item_quantity = $order->quantity;
-        $item = Item::where("id",$item_id)->first();
-        $item_deal_id = $item->deal_id;
-        $item_price = $item->price;
+        $itemId = $order->item_id;
+        $itemQuantity = $order->quantity;
+        $item = Item::where("id",$itemId)->first();
+        $itemDealId = $item->deal_id;
+        $itemPrice = $item->price;
 
-        if(!is_null($item_deal_id)){
-            $deal = Deal::where("id",$item_deal_id)->first();
-            $item_deal_value = $deal->value;
-            $item_final_price = $item_quantity * ($item_price - ($item_price*($item_deal_value/100)));
-            return $item_final_price;            
+        if(!is_null($itemDealId)){
+            $deal = Deal::where("id",$itemDealId)->first();
+            $itemDealValue = $deal->value;
+            $itemFinalPrice = $itemQuantity * ($itemPrice - ($itemPrice*($itemDealValue/100)));
+            return $itemFinalPrice;            
         }
         else{
-            $item_price = $item->price;
-            $item_final_price = $item_quantity * $item_price;
-            return $item_final_price;
+            $itemPrice = $item->price;
+            $itemFinalPrice = $itemQuantity * $itemPrice;
+            return $itemFinalPrice;
         }
         //? use joins not individual calls $item_price = $item->price, what's the better implementation?
         // todo: implement a function to delete records after expiration of duration
@@ -78,8 +78,8 @@ class OrderController extends Controller
 
         if($order && !is_null($order->id)){
 
-            $total_price = $this->priceOfOrder($order->id);
-            $order->total_price = $total_price;
+            $totalPrice = $this->priceOfOrder($order->id);
+            $order->total_price = $totalPrice;
             $order->save();
 
             return response()->json(["order"=>$order],200);
