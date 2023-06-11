@@ -34,6 +34,7 @@ Route::get("v1/get-deals",[DealController::class,"getDeals"]);
 // * ITEM ROUTES
 Route::post("v1/add-item",[ItemController::class,"addItem"]); 
 Route::get("/v1/get-items",[ItemController::class,"getItems"]);
+Route::get("/v1/get-detailed-items",[ItemController::class,"getJoinItems"]);
 
 // * ORDER ROUTES
 Route::post("/v1/add-order",[OrderController::class,"addOrder"]);

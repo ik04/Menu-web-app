@@ -15,6 +15,12 @@ use Ramsey\Uuid\Uuid;
 class ItemController extends Controller
 {
 
+    public function getJoinItems(Request $request){
+        $joinItem = Item::join("categories","items.category_id","=","categories.id")->join("deals","items.deal_id","=","deals.id")->select('items.name', 'items.image', 'items.price', 'categories.name as category_name', 'deals.value as deal_value')
+        ->get();
+        return response()->json(["result"=>$joinItem]);
+    }
+
     public function healthCheck(Request $request){
         return response()->json("Hello from Menu ~Ishaan Khurana",200);
     }
@@ -98,6 +104,8 @@ class ItemController extends Controller
 
             return response()->json(["items"=>Item::all()],200);
         }
+
+     
 
         // todo: order schema, controller and interactions
 
