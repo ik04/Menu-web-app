@@ -24,6 +24,8 @@ Route::get("/v1/healthcheck",[ItemController::class,"healthCheck"]);
 Route::post("/v1/add-category",[CategoryController::class,"addCategory"]);  
 Route::post("/v1/add-categories",[CategoryController::class,"addCategories"]); // * add multiple categories using an array of objects (state)
 Route::get("/v1/get-categories",[CategoryController::class,"getCategories"]);
+Route::post("/v1/get-category-items",[CategoryController::class,"getCategoryItems"]);  
+
 
 
 // * DEAL ROUTES
@@ -35,6 +37,7 @@ Route::get("v1/get-deals",[DealController::class,"getDeals"]);
 Route::post("v1/add-item",[ItemController::class,"addItem"]); 
 Route::get("/v1/get-items",[ItemController::class,"getItems"]);
 Route::get("/v1/get-detailed-items",[ItemController::class,"getJoinItems"]);
+Route::post("/v1/get-detailed-item",[ItemController::class,"getJoinItem"]);
 
 // * ORDER ROUTES
 Route::post("/v1/add-order",[OrderController::class,"addOrder"]);

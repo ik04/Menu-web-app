@@ -50,23 +50,20 @@ class CategoryController extends Controller
             $categories[] = $record; 
         }
 
-
         return response()->json(['categories'=>$categories,"message"=>"categories have been added!"]);
-        
-
     }
 
     public function getCategories(Request $request){
         return response()->json(["categories" => Category::all()]);
     }
 
-    // public function getCategoryItems(Request $request){
-    //     $validation = Validator::make($request->all(),[
-    //         "name" => "required|string",
-    //     ]);
-    //     $validated = $validation->validated();
-    //     $categorySearch = cate
-
-    // }
+    public function getCategoryItems(Request $request){
+        $validation = Validator::make($request->all(),[
+            "category_uuid" => "required|uuid",
+        ]);
+        $validated = $validation->validated();
+        $categorySearch = Category::join("items","items.category_id","=","categories.id")->select('items.name', 'items.image', 'items.price','items.item_uuid', 'categories.name as category_name')->where("categories.category_uuid",$validated["category_uuid"])->get();
+        return response()->json(["items"=>$categorySearch]);
+    } // ? implement caching in FE
 
 }

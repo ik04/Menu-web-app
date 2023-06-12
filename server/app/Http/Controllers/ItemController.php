@@ -16,9 +16,18 @@ class ItemController extends Controller
 {
 
     public function getJoinItems(Request $request){
-        $joinItem = Item::join("categories","items.category_id","=","categories.id")->join("deals","items.deal_id","=","deals.id")->select('items.name', 'items.image', 'items.price', 'categories.name as category_name', 'deals.value as deal_value')
+        $joinItems = Item::join("categories","items.category_id","=","categories.id")->join("deals","items.deal_id","=","deals.id")->select('items.name', 'items.image', 'items.price','items.item_uuid', 'categories.name as category_name', 'deals.value as deal_value')
         ->get();
-        return response()->json(["result"=>$joinItem]);
+        return response()->json(["items"=>$joinItems]);
+    }
+    public function getJoinItem(Request $request){
+        $validation = Validator::make($request->all(),[
+            "item_uuid" => "required|uuid"
+        ]);
+        $validated = $validation->validated();
+        $joinItems = Item::join("categories","items.category_id","=","categories.id")->join("deals","items.deal_id","=","deals.id")->select('items.name', 'items.image', 'items.price', 'categories.name as category_name', 'deals.value as deal_value')->where("item_uuid",$validated["item_uuid"])
+        ->get();
+        return response()->json(["item"=>$joinItems]);
     }
 
     public function healthCheck(Request $request){
