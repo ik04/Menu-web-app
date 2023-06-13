@@ -12,8 +12,8 @@ class Order extends Model
         "item_id",
         "quantity",
         "order_uuid",
-        "status"
-        // "user"
+        "status",
+        "user_id"
         //* if user is added, they'll show up directly in the order
 
     ];

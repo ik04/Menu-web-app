@@ -20,6 +20,14 @@ class CategoryController extends Controller
         }
         $validated = $validation->validated();
         $santiziedCategory = strtolower($validated["name"]);
+
+
+        $existingCategory = Category::where('name', $santiziedCategory)
+        ->first();
+
+    if ($existingCategory) {
+        return response()->json(["message" => "Deal with the same value and duration already exists!"], 409);
+    }
         $category = Category::create(["name"=>$santiziedCategory,
         "description"=>$validated["description"],"category_uuid" => Uuid::uuid4()]);
         return response()->json(['category'=>$category,"message"=>"category added"]);
@@ -45,12 +53,23 @@ class CategoryController extends Controller
         $categories = [];
 
         foreach($validated["categories"] as $category){
+
             $santiziedCategory = strtolower($category["name"]);
+
+
+            if($existingDeal = Category::where('name', $santiziedCategory)
+            ->first()){
+                continue;
+            }
+
             $record = Category::create(["name" => $santiziedCategory,"description" => $category["description"],"category_uuid" => Uuid::uuid4()]);
             $categories[] = $record; 
         }
+        if(empty($categories)){
+            return response()->json("No new categories have been added",200);
+        }
 
-        return response()->json(['categories'=>$categories,"message"=>"categories have been added!"]);
+        return response()->json(['categories'=>$categories,"message"=>"New categories have been added!"]);
     }
 
     public function getCategories(Request $request){

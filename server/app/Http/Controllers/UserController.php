@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller
 {
@@ -22,7 +23,8 @@ class UserController extends Controller
         $user = User::create([
             "email" => $validated["email"],
             "name" => $validated["name"],
-            "password" => Hash::make($validated["password"])
+            "password" => Hash::make($validated["password"]),
+            "user_uuid" => Uuid::uuid4()
         ]);
         return response()->json(["user"=>$user],201);
     }
@@ -40,7 +42,8 @@ class UserController extends Controller
             "email" => $validated["email"],
             "name" => $validated["name"],
             "password" => Hash::make($validated["password"]),
-            "is_admin" => 1
+            "is_admin" => 1,
+            "user_uuid" => Uuid::uuid4()
         ]);
         return response()->json(["user"=>$user],201);
     }

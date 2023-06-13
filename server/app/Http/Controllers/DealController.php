@@ -82,6 +82,10 @@ class DealController extends Controller
             $deals[] = $record;
         }
 
+        if(empty($deals)){
+            return response()->json("No new Deals have been added",200);
+        }
+
         return response()->json(["deals" => $deals, "message" => "Deals have been added!"], 200);
     }
 
