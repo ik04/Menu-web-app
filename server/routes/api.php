@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,32 +19,49 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// * UNIVERSAL Routes
 Route::get("/v1/healthcheck",[ItemController::class,"healthCheck"]);
-
 // * CATEGORY ROUTES
-Route::post("/v1/add-category",[CategoryController::class,"addCategory"]);  
-Route::post("/v1/add-categories",[CategoryController::class,"addCategories"]); // * add multiple categories using an array of objects (state)
-Route::get("/v1/get-categories",[CategoryController::class,"getCategories"]);
 Route::post("/v1/get-category-items",[CategoryController::class,"getCategoryItems"]);  
-
-
+Route::get("/v1/get-categories",[CategoryController::class,"getCategories"]);
 
 // * DEAL ROUTES
-Route::post("v1/add-deal",[DealController::class,"addDeal"]);
-Route::post("v1/add-deals",[DealController::class,"addDeals"]); // * add multiple categories using an array of objects (state)
 Route::get("v1/get-deals",[DealController::class,"getDeals"]);
 
 // * ITEM ROUTES
-Route::post("v1/add-item",[ItemController::class,"addItem"]); 
-Route::get("/v1/get-items",[ItemController::class,"getItems"]);
 Route::get("/v1/get-detailed-items",[ItemController::class,"getJoinItems"]);
 Route::post("/v1/get-detailed-item",[ItemController::class,"getJoinItem"]);
 
-// * ORDER ROUTES
-Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
-Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
-Route::post("/v1/finish-order",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
+
+// * AUTH ROUTES
+Route::post("/v1/auth-register",[UserController::class,"authRegister"]);
+Route::post("/v1/auth-login",[UserController::class,"authLogin"]);
+
+Route::middleware(['auth:sanctum',"checkUserPrivilege"])->group(function (){
+
+    Route::get("/v1/get-items",[ItemController::class,"getItems"]);
+    
+    // * ADDITION ROUTES
+    Route::post("/v1/add-category",[CategoryController::class,"addCategory"]);  
+    Route::post("/v1/add-categories",[CategoryController::class,"addCategories"]); // * add multiple categories using an array of objects (state)
+    Route::post("v1/add-deal",[DealController::class,"addDeal"]);
+    Route::post("v1/add-deals",[DealController::class,"addDeals"]); // * add multiple deals using an array of objects (state)
+    Route::post("v1/add-item",[ItemController::class,"addItem"]); 
+});
 
 
+// * USER ROUTES
 
-// todo: admin/moderator to interact with the addition routes
+Route::post("/v1/register",[UserController::class,"register"]);
+Route::post("/v1/login",[UserController::class,"login"]);
+
+Route::middleware(['auth:sanctum'],function (){
+    Route::post("/v1/logout",[UserController::class,"logout"]);
+    // * ORDER ROUTES
+    Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
+    Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
+    Route::post("/v1/finish-order",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
+});
+
+// todo: admin/moderator to interact with the addition routes (since this is a menu app)
+//! todo: different tokens for auth and user or plan 1 of isAuth

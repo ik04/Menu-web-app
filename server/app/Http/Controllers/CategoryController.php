@@ -64,6 +64,7 @@ class CategoryController extends Controller
         $validated = $validation->validated();
         $categorySearch = Category::join("items","items.category_id","=","categories.id")->select('items.name', 'items.image', 'items.price','items.item_uuid', 'categories.name as category_name')->where("categories.category_uuid",$validated["category_uuid"])->get();
         return response()->json(["items"=>$categorySearch]);
-    } // ? implement caching in FE
+    } 
+    // ? implement caching in FE
 
 }

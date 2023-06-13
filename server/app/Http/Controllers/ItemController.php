@@ -95,10 +95,7 @@ class ItemController extends Controller
                     return response()->json(["error" => "invalid Deal UUID"], 400);
                 }
             }
-
-
             // ? find the base64 method for sending images (for future)
-
             $item = Item::create([
                 "name" => $validated["name"],
                 "image" => $url,
