@@ -51,7 +51,6 @@ Route::middleware(['auth:sanctum',"checkUserPrivilege"])->group(function (){
 
 
 // * USER ROUTES
-
 Route::post("/v1/register",[UserController::class,"register"]);
 Route::post("/v1/login",[UserController::class,"login"]);
 
@@ -60,12 +59,14 @@ Route::middleware(['auth:sanctum'])->group(function (){
     // * ORDER ROUTES 
     //todo: add get order routes
     Route::post("/v1/add-order",[OrderController::class,"addOrder"]);
-    Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
+    // Route::post("/v1/checkout-order",[OrderController::class,"checkoutOrder"]);
     Route::post("/v1/finish-order",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
     Route::post("/v1/add-order-quantity",[OrderController::class,"incrementOrderQuantity"]); 
     Route::post("/v1/decrease-order-quantity",[OrderController::class,"decrementOrderQuantity"]); 
+    Route::post("/v1/get-pending-orders",[OrderController::class,"getUserPendingOrders"]); // * checkout route instead
 });
 
-// todo: need to add alot of client routes (getting all user orders, totalling price in the end, allow going back to modify order, adding to order with an item and current user (actual issue))
+// todo: need to add alot of client routes 
+// todo: (getting all user orders totalling price in the end, allow going back to modify order, adding to order with an item and current user (actual issue))
 
 //? dev routes (idea)

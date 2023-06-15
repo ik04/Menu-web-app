@@ -35,7 +35,9 @@ class OrderController extends Controller
         $validated = $validation->validated();
     
         try{
-            $actualItemId = $this->getActualItemId($validated["item_uuid"]);
+            $item = Item::where("item_uuid",$validated["item_uuid"])->first();
+            $actualItemId = $item->id;
+            $price = $item->price;
         }catch(Exception $e){
             return response()->json(["error" => "invalid Item UUID"], 400);
         }
@@ -57,67 +59,11 @@ class OrderController extends Controller
         $order = Order::create([
             "item_id" => $actualItemId,
             "user_id" => $actualUserId,
-            "order_uuid" => Uuid::uuid4()
+            "order_uuid" => Uuid::uuid4(),
+            "total_price" => $price
         ]);
         return response()->json(["order_uuid"=>$order->order_uuid,"message"=>"order has been created!"],201);
     }
-
-
-    public function incrementOrderQuantity(Request $request){
-        $validation = Validator::make($request->all(),[
-            "order_uuid" => "required|uuid"
-        ]);
-
-        $validated = $validation->validated();
-        
-        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
-            return response()->json(["error"=>"Order not found"],400);
-
-        }
-
-        $order->total_price = null;
-        $currentQuantity = $order->quantity;
-        $order->quantity = $currentQuantity + 1;
-
-        $order->save();
-
-        return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
-        
-    }
-    public function decrementOrderQuantity(Request $request){
-        $validation = Validator::make($request->all(),[
-            "order_uuid" => "required|uuid"
-        ]);
-
-        $validated = $validation->validated();
-        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
-            return response()->json(["error"=>"Order not found"],400);
-
-        }
-
-        $order->total_price = null;
-        $currentQuantity = $order->quantity;
-
-
-
-
-        if($currentQuantity === 1){
-            $order->delete();
-            return response()->json(["message"=>"order deleted"]);
-            
-        }
-        $order->quantity = $currentQuantity - 1;
-        $order->save();
-        return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
-
-
-        
-    }
-
-
-
-
-
 
     public function priceOfOrder($orderId){
         $order = Order::where("id",$orderId)->first();
@@ -143,49 +89,117 @@ class OrderController extends Controller
         // todo: implement a function to delete records after expiration of duration
     }
 
-    public function checkoutOrder(Request $request){
-        //* this will be called when the client presses proceed to checkout
+
+    public function incrementOrderQuantity(Request $request){
         $validation = Validator::make($request->all(),[
-            "order_uuid" => "required|uuid",
+            "order_uuid" => "required|uuid"
         ]);
+
         $validated = $validation->validated();
+        
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
+            return response()->json(["error"=>"Order not found"],400);
 
-        $order = Order::where("order_uuid",$validated)->first();
-
-        if($order && !is_null($order->id)){
-
-            $totalPrice = $this->priceOfOrder($order->id);
-            $order->total_price = $totalPrice;
-            $order->save();
-
-            return response()->json(["order"=>$order],200);
-        }else{
-            return response()->json(["error"=>"Record not found or Invalid Uuid",400]);
         }
-        // todo: run tests and update checks
+
+        $currentQuantity = $order->quantity;
+        $order->quantity = $currentQuantity + 1;
+        $order->save();
+        $totalPrice = $this->priceOfOrder($order->id);
+        $order->total_price = $totalPrice;
+        $order->save();
+
+        return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
+        
     }
+    public function decrementOrderQuantity(Request $request){
+        $validation = Validator::make($request->all(),[
+            "order_uuid" => "required|uuid"
+        ]);
+
+        $validated = $validation->validated();
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
+            return response()->json(["error"=>"Order not found"],400);
+
+        }
+
+        $currentQuantity = $order->quantity;
+
+        if($currentQuantity === 1){
+            $order->delete();
+            return response()->json(["message"=>"order deleted"]);
+        }
+        $order->quantity = $currentQuantity - 1;
+        $order->save();
+        $totalPrice = $this->priceOfOrder($order->id);
+        $order->total_price = $totalPrice;
+        $order->save();
+        return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
+    }
+
+    // public function checkoutOrder(Request $request){
+    //     $validation = Validator::make($request->all(),[
+    //         "order_uuid" => "required|uuid",
+    //     ]);
+    //     $validated = $validation->validated();
+
+    //     $order = Order::where("order_uuid",$validated)->first();
+
+    //     if($order && !is_null($order->id)){
+    //         $totalPrice = $this->priceOfOrder($order->id);
+    //         $order->total_price = $totalPrice;
+    //         $order->save();
+
+    //         return response()->json(["order"=>$order],200);
+    //     }else{
+    //         return response()->json(["error"=>"Record not found or Invalid Uuid",400]);
+    //     }
+    //     // todo: run tests and update checks
+    // }
 
     
     public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
-    {
+    { // todo: make it accept multiple responses and make themm all complete
+
+        $requestData = $request->all();
+
+        if (!isset($requestData['orders'])) {
+            return response()->json(['message' => 'Invalid request data. Missing "orders" key.'], 400);
+        }
+
         $validation = Validator::make($request->all(), [
-            "order_uuid" => "required|uuid",
+            "orders.*.order_uuid" => "required|uuid",
         ]);
         $validated = $validation->validated();
-    
-        $order = Order::where("order_uuid", $validated)->first();
-        if ($order && !is_null($order->id)) {
-            if (is_null($order->total_price)) {
-                return response()->json(["error" => "Total price is not available, Order is not checked-out"], 400);
-            }
-    
-            $order->status = Status::COMPLETE->value;
-            $order->save();
-    
-            return response()->json(["order" => $order], 200);
-        } else {
-            return response()->json(["error" => "Record not found or Invalid Uuid"], 400);
+
+        $orders = [];
+
+        foreach ($validated['orders'] as $checkedoutOrder) {
+            $order = Order::where("order_uuid", $checkedoutOrder["order_uuid"])->first();
+                $order->status = Status::COMPLETE->value;
+                $order->save();
+
+                $orders[] = $order;
         }
+        return response()->json(["message"=>"Orders Completed!","orders"=>$orders],200);
+
+    }
+    
+    
+    public function getUserPendingOrders(Request $request){
+        $validation = Validator::make($request->all(),[
+            "user_uuid" => "required|uuid"
+        ]);
+        $validated = $validation->validated();
+
+        try{
+            $actualUserId = $this->getActualUserId($validated["user_uuid"]);
+        }catch(Exception $e){
+            return response()->json(["error" => "invalid User UUID"], 400);
+        }
+        $orders = Order::where("user_id",$actualUserId)->where("status",Status::PENDING)->get();
+        return response()->json(["orders" => $orders,"message" => "pending orders"],200);
+        
     }
     
         
