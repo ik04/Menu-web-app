@@ -13,6 +13,7 @@ class Order extends Model
         "quantity",
         "order_uuid",
         "status",
+        "total_price",
         "user_id"
         //* if user is added, they'll show up directly in the order
 

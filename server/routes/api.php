@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// * UNIVERSAL Routes
+// * UNIVERSAL Routes   
 Route::get("/v1/healthcheck",[ItemController::class,"healthCheck"]);
 // * CATEGORY ROUTES
 Route::post("/v1/get-category-items",[CategoryController::class,"getCategoryItems"]);  
@@ -51,6 +51,7 @@ Route::middleware(['auth:sanctum',"checkUserPrivilege"])->group(function (){
 
 
 // * USER ROUTES
+Route::get("/v1/get-user-data",[UserController::class,"userData"]);
 Route::post("/v1/register",[UserController::class,"register"]);
 Route::post("/v1/login",[UserController::class,"login"]);
 

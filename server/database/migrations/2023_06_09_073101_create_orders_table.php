@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer("item_id");
             $table->integer("user_id");
             $table->integer("quantity")->default(1);
-            $table->decimal("total_price",4,2)->nullable();
+            $table->decimal("total_price",4,2);
             $table->tinyInteger("status")->default(Status::PENDING->value); // incomplete order, will be updated using an update request
             $table->uuid("order_uuid")->unique();
             $table->timestamps();
