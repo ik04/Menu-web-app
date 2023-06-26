@@ -120,14 +120,13 @@ class OrderController extends Controller
         $validated = $validation->validated();
         if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
             return response()->json(["error"=>"Order not found"],400);
-
         }
 
         $currentQuantity = $order->quantity;
 
         if($currentQuantity === 1){
             $order->delete();
-            return response()->json(["message"=>"order deleted"]);
+            return response()->json(["message"=>"order deleted"],200);
         }
         $order->quantity = $currentQuantity - 1;
         $order->save();
@@ -201,10 +200,22 @@ class OrderController extends Controller
         return response()->json(["orders" => $orders,"message" => "pending orders"],200);
         
     }
-    
-        
 
-        
+    public function deleteOrder(Request $request){
+        $validation = Validator::make($request->all(),[
+            "order_uuid" => "required|uuid"
+        ]);
+
+        $validated = $validation->validated();
+
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
+            return response()->json(["error"=>"Order not found"],400);
+        }
+        $order->delete();
+        return response()->json(["message"=>"order deleted"],200);
+
+
+    }
 
 }
 // ? should i implement a check for complete orders? since you shouldn't be able to alter completed routes

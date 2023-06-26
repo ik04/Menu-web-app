@@ -113,8 +113,7 @@ class ItemController extends Controller
 
      
 
-        // todo: order schema, controller and interactions
-
+// todo: add search route
         
         
         

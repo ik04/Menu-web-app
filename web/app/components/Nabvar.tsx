@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function Nabvar() {
@@ -7,10 +8,12 @@ export default function Nabvar() {
         Menu<span className="text-hotorange">Sphere</span>
       </div>
       <div className="flex justify-evenly items-center w-1/5">
-        <a className="text-dalyellow">Login</a>
-        <a className="text-dalyellow" href="/register">
+        <Link className="text-dalyellow" href="/login">
+          Login
+        </Link>
+        <Link className="text-dalyellow" href="/register">
           Register
-        </a>
+        </Link>
       </div>
     </div>
   );
