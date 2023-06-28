@@ -65,7 +65,7 @@ class UserController extends Controller
         }
         if($user->is_admin){
             $userToken = $user->createToken("myusertoken")->plainTextToken;;
-            return response()->json(["user"=>$user,"user_token"=>$userToken],200)->withCookie(cookie()->forever('ut',$userToken));
+            return response()->json(["user"=>$user,"user_token"=>$userToken],200)->withCookie(cookie()->forever('at',$userToken));
         }
         else{
             return response()->json(["you are not a moderator"],403);
@@ -88,7 +88,7 @@ class UserController extends Controller
             return response()->json(["error"=>"Incorrect Password"],401);
         }
             $userToken = $user->createToken("myusertoken")->plainTextToken;;
-            return response()->json(["user"=>$user,"user_token"=>$userToken],200)->withCookie(cookie()->forever('ut',$userToken));
+            return response()->json(["user"=>$user,"user_token"=>$userToken],200)->withCookie(cookie()->forever('at',$userToken));
     }
 
     public function logout(Request $request){
