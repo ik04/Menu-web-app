@@ -4,3 +4,11 @@ export interface userFormdata {
   password: string;
   password_confirmation: string;
 }
+export interface loginFormData {
+  email: string;
+  password: string;
+}
+
+interface GlobalStateProps {
+  children: ReactNode;
+}

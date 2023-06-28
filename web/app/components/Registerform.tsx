@@ -5,7 +5,9 @@ import Link from "next/link";
 import React from "react";
 import { useState } from "react";
 
-export default async function RegisterForm() {
+export default function RegisterForm() {
+  // ? const router = useRouter(); why dis not work?
+
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -19,8 +21,13 @@ export default async function RegisterForm() {
       password: password,
       password_confirmation: confirmationPassword,
     };
-    const resp = await registerUser(formdata);
-    console.log(resp);
+    try {
+      const resp = await registerUser(formdata);
+      console.log(resp);
+      location.href = "/login";
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
@@ -44,7 +51,6 @@ export default async function RegisterForm() {
                 </h1>
                 <form
                   className="space-y-4 md:space-y-6"
-                  action="#"
                   onSubmit={handleSubmit}
                 >
                   <div>

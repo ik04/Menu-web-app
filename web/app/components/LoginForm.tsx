@@ -1,7 +1,26 @@
+"use client";
+import loginUser from "@/lib/LoginUser";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 export default function LoginForm() {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formdata = {
+      email: email,
+      password: password,
+    };
+    try {
+      const resp = await loginUser(formdata);
+      console.log(resp);
+      location.href = "/";
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       {" "}
@@ -22,7 +41,10 @@ export default function LoginForm() {
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-hotorange md:text-2xl dark:text-white">
                   Login to your account
                 </h1>
-                <form className="space-y-4 md:space-y-6" action="#">
+                <form
+                  className="space-y-4 md:space-y-6"
+                  onSubmit={handleSubmit}
+                >
                   <div>
                     <label
                       htmlFor="email"
@@ -33,6 +55,7 @@ export default function LoginForm() {
                     <input
                       type="email"
                       name="email"
+                      onChange={(e) => setEmail(e.target.value)}
                       id="email"
                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="name@domain.com"
@@ -48,6 +71,7 @@ export default function LoginForm() {
                     <div className="flex space-x-2">
                       <input
                         type="password"
+                        onChange={(e) => setPassword(e.target.value)}
                         name="password"
                         id="password"
                         placeholder="••••••••"
