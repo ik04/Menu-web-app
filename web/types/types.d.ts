@@ -9,6 +9,21 @@ export interface loginFormData {
   password: string;
 }
 
-interface GlobalStateProps {
+export interface GlobalStateProps {
   children: ReactNode;
+}
+
+export interface UserData {
+  email: string;
+  name: string;
+  user_uuid: string;
+  userUuid: string;
+  access_token: string;
+  // Other properties
+}
+
+export interface Category {
+  name: string;
+  description: string;
+  category_uuid: string;
 }
