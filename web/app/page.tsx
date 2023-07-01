@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Nabvar from "./components/Nabvar";
 import GetCategories from "@/lib/GetCategories";
 import { Category } from "@/types/types";
+import Link from "next/link";
 
 export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -33,12 +34,13 @@ export default function Page() {
           <h2 className="text-4xl font-mono">Categories</h2>
           <div className="flex justify-center flex-wrap w-[1000px]">
             {categories.map((category) => (
-              <div
+              <Link
+                href={`/categories/${category.category_uuid}`}
                 className="bg-gray-300 p-5 rounded-xl w-[300px] m-4"
                 key={category.category_uuid}
               >
                 {category.name}
-              </div>
+              </Link>
             ))}
           </div>
         </div>

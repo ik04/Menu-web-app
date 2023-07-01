@@ -27,3 +27,24 @@ export interface Category {
   description: string;
   category_uuid: string;
 }
+
+export interface CategoryProps {
+  params: {
+    category_uuid: string;
+  };
+}
+export interface CategoryFormData {
+  category_uuid: string;
+}
+
+export interface CategoryItem {
+  name: string;
+  image: string;
+  price: number;
+  item_uuid: string;
+}
+
+export interface CategoryItemsResponse {
+  items: CategoryItem[];
+  category_name: string;
+}
