@@ -33,6 +33,11 @@ export interface CategoryProps {
     category_uuid: string;
   };
 }
+
+export interface CategoryResponse {
+  categories: Category[];
+}
+
 export interface CategoryFormData {
   category_uuid: string;
 }

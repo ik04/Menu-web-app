@@ -81,9 +81,9 @@ class CategoryController extends Controller
             "category_uuid" => "required|uuid",
         ]);
         $validated = $validation->validated();
-        $categorySearch = Category::join("items","items.category_id","=","categories.id")->select('items.name', 'items.image', 'items.price','items.item_uuid')->where("categories.category_uuid",$validated["category_uuid"])->get();
+        $categoryItems = Category::join("items","items.category_id","=","categories.id")->select('items.name', 'items.image', 'items.price','items.item_uuid')->where("categories.category_uuid",$validated["category_uuid"])->get();
         $categoryName = Category::where("category_uuid",$validated["category_uuid"])->first("name")->name;
-        return response()->json(["items"=>$categorySearch,"category_name"=>$categoryName]);
+        return response()->json(["items"=>$categoryItems,"category_name"=>$categoryName]);
     } 
     // ? implement caching in FE
 

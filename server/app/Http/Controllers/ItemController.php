@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Status;
 use App\Models\Category;
 use App\Models\Deal;
 use App\Models\Item;
+use App\Models\Order;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,8 +30,22 @@ class ItemController extends Controller
         return response()->json(["item"=>$joinItems]);
     }
 
+    
+
     public function healthCheck(Request $request){
-        return response()->json("Hello from Menu ~Ishaan Khurana",200);
+        $validation = Validator::make($request->all(),[
+            "order_uuid" => "required|uuid",
+        ]);
+        $validated = $validation->validated();
+    
+        
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->exists()){
+            return response()->json(["error"=>"Order not found"],400);
+        }
+        $order = Order::select("quantity","id","total_price")->where("order_uuid",$validated["order_uuid"])->first();
+
+        
+        return response()->json($order,200);
     }
 
     public function getCategoryId($categoryId)

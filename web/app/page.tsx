@@ -1,21 +1,12 @@
-"use client";
-import React, { useEffect, useState } from "react";
 import Nabvar from "./components/Nabvar";
 import GetCategories from "@/lib/GetCategories";
-import { Category } from "@/types/types";
+import { Category, CategoryResponse } from "@/types/types";
 import Link from "next/link";
 
-export default function Page() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const callEndpoint = async () => {
-    const resp = await GetCategories();
-    const categories = resp.data.categories;
-    console.log(categories);
-    setCategories(categories);
-  };
-  useEffect(() => {
-    callEndpoint();
-  }, []);
+export default async function Page() {
+  const categoryResponse: CategoryResponse | undefined = await GetCategories();
+  const categories = categoryResponse?.categories;
+  console.log(categories);
 
   return (
     <div className="bg-cream text-black">
@@ -33,7 +24,7 @@ export default function Page() {
         <div className="category-section flex flex-col items-center w-full justify-center mt-10">
           <h2 className="text-4xl font-mono">Categories</h2>
           <div className="flex justify-center flex-wrap w-[1000px]">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <Link
                 href={`/categories/${category.category_uuid}`}
                 className="bg-gray-300 p-5 rounded-xl w-[300px] m-4"

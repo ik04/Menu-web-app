@@ -10,9 +10,19 @@ export default async function page({
     category_uuid: category_uuid,
   };
 
-  const categoryItems: CategoryItemsResponse | void = await getCategoryItems(
-    formdata
-  );
+  const categoryItems: CategoryItemsResponse = await getCategoryItems(formdata);
 
-  return <div>{categoryItems?.category_name}</div>;
+  return (
+    <div>
+      <div>{categoryItems.category_name}</div>
+      {categoryItems.items.map((item) => (
+        <>
+          <div className="flex space-x-2">
+            <div>{item.name}</div>
+            <div>{item.price}</div>
+          </div>
+        </>
+      ))}
+    </div>
+  );
 }

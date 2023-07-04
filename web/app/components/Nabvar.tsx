@@ -26,7 +26,7 @@ export default function Nabvar() {
           <div className="flex justify-evenly items-center w-1/5">
             <Link
               className="text-dalyellow text-xl font-mono font-extrabold"
-              href="/login"
+              href="/"
             >
               Hi {name}
             </Link>

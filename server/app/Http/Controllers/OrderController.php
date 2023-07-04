@@ -17,23 +17,18 @@ class OrderController extends Controller
 {
     public function getActualItemId($item_uuid){
 
-        $actualItemId = Item::where("item_uuid",$item_uuid)->first()->id;
+        $actualItemId = Item::select("item_uuid","id")->where("item_uuid",$item_uuid)->first()->id;
         return $actualItemId;
 
     }
-    public function getActualUserId($user_uuid){
-
-        $actualUserId = User::where("user_uuid",$user_uuid)->first()->id;
-        return $actualUserId;
-
-    }
+   
     public function addOrder(Request $request){
         $validation = Validator::make($request->all(),[
             "item_uuid" => "required|uuid",
-            "user_uuid" => "required|uuid",
         ]);
         $validated = $validation->validated();
     
+        
         try{
             $item = Item::where("item_uuid",$validated["item_uuid"])->first();
             $actualItemId = $item->id;
@@ -41,20 +36,15 @@ class OrderController extends Controller
         }catch(Exception $e){
             return response()->json(["error" => "invalid Item UUID"], 400);
         }
-        try{
-            $actualUserId = $this->getActualUserId($validated["user_uuid"]);
-        }catch(Exception $e){
-            return response()->json(["error" => "invalid User UUID"], 400);
-        }
+        $actualUserId = $request->user()->id;
 
         $existingOrder = Order::where('item_id', $actualItemId)
         ->where('user_id', $actualUserId)
-        ->first();
+        ->exists();
 
     if ($existingOrder) {
         return response()->json(["message" => "Order with the same item already exists!"], 409);
     }
-
 
         $order = Order::create([
             "item_id" => $actualItemId,
@@ -97,10 +87,10 @@ class OrderController extends Controller
 
         $validated = $validation->validated();
         
-        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->exists()){
             return response()->json(["error"=>"Order not found"],400);
-
         }
+        $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
 
         $currentQuantity = $order->quantity;
         $order->quantity = $currentQuantity + 1;
@@ -118,9 +108,11 @@ class OrderController extends Controller
         ]);
 
         $validated = $validation->validated();
-        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->first()){
+        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->exists()){
             return response()->json(["error"=>"Order not found"],400);
         }
+
+        $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
 
         $currentQuantity = $order->quantity;
 
@@ -135,27 +127,7 @@ class OrderController extends Controller
         $order->save();
         return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
     }
-
-    // public function checkoutOrder(Request $request){
-    //     $validation = Validator::make($request->all(),[
-    //         "order_uuid" => "required|uuid",
-    //     ]);
-    //     $validated = $validation->validated();
-
-    //     $order = Order::where("order_uuid",$validated)->first();
-
-    //     if($order && !is_null($order->id)){
-    //         $totalPrice = $this->priceOfOrder($order->id);
-    //         $order->total_price = $totalPrice;
-    //         $order->save();
-
-    //         return response()->json(["order"=>$order],200);
-    //     }else{
-    //         return response()->json(["error"=>"Record not found or Invalid Uuid",400]);
-    //     }
-    //     // todo: run tests and update checks
-    // }
-
+    
     
     public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
     { // todo: make it accept multiple responses and make themm all complete
@@ -186,17 +158,9 @@ class OrderController extends Controller
     
     
     public function getUserPendingOrders(Request $request){
-        $validation = Validator::make($request->all(),[
-            "user_uuid" => "required|uuid"
-        ]);
-        $validated = $validation->validated();
+        $userId = $request->user()->id;
 
-        try{
-            $actualUserId = $this->getActualUserId($validated["user_uuid"]);
-        }catch(Exception $e){
-            return response()->json(["error" => "invalid User UUID"], 400);
-        }
-        $orders = Order::where("user_id",$actualUserId)->where("status",Status::PENDING)->get();
+        $orders = Order::where("user_id",$userId)->where("status",Status::PENDING)->get(); // todo: make it a join query
         return response()->json(["orders" => $orders,"message" => "pending orders"],200);
         
     }
@@ -213,8 +177,6 @@ class OrderController extends Controller
         }
         $order->delete();
         return response()->json(["message"=>"order deleted"],200);
-
-
     }
 
 }
