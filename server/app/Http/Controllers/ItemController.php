@@ -33,19 +33,8 @@ class ItemController extends Controller
     
 
     public function healthCheck(Request $request){
-        $validation = Validator::make($request->all(),[
-            "order_uuid" => "required|uuid",
-        ]);
-        $validated = $validation->validated();
-    
         
-        if(!$order = Order::where("order_uuid",$validated["order_uuid"])->exists()){
-            return response()->json(["error"=>"Order not found"],400);
-        }
-        $order = Order::select("quantity","id","total_price")->where("order_uuid",$validated["order_uuid"])->first();
-
-        
-        return response()->json($order,200);
+        return response()->json("Hi from Menu-App ~ ishaan khurana",200);
     }
 
     public function getCategoryId($categoryId)

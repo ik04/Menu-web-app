@@ -1,0 +1,72 @@
+{
+    "items": [
+        {
+            "pizza_name": "Margherita",
+            "description": "A hugely popular margherita, with a deliciously tangy single cheese topping"
+        },
+        {
+            "pizza_name": "Margherita",
+            "description": "A hugely popular margherita, with a deliciously tangy single cheese topping"
+        },
+        {
+            "pizza_name": "Margherita",
+            "description": "A hugely popular margherita, with a deliciously tangy single cheese topping"
+        },
+        {
+            "pizza_name": "Double Cheese Margherita",
+            "description": "The ever-popular Margherita - loaded with extra cheese... oodies of it!"
+        },
+        {
+            "pizza_name": "Farm House",
+            "description": "A pizza that goes ballistic on veggies! Check out this mouth watering overload of crunchy, crisp capsicum, succulent mushrooms and fresh tomatoes"
+        },
+        {
+            "pizza_name": "Peppy Paneer",
+            "description": "Chunky paneer with crisp capsicum and spicy red pepper - quite a mouthful!"
+        },
+        {
+            "pizza_name": "Mexican Green Wave",
+            "description": "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes and jalapeno with a liberal sprinkling of exotic Mexican herbs."
+        },
+        {
+            "pizza_name": "Deluxe Veggie",
+            "description": "For a vegetarian looking for a BIG treat that goes easy on the spices, this one's got it all.. The onions, the capsicum, those delectable mushrooms - with paneer and golden corn to top it all."
+        },
+        {
+            "pizza_name": "Veg Extravaganza",
+            "description": "A pizza that decidedly staggers under an overload of golden corn, exotic black olives, crunchy onions, crisp capsicum, succulent mushrooms, juicyfresh tomatoes and jalapeno - with extra cheese to go all around."
+        },
+        {
+            "pizza_name": "CHEESE N CORN",
+            "description": "Cheese I Golden Corn | Cheese n Corn Pizza"
+        },
+        {
+            "pizza_name": "FRESH VEGGIE",
+            "description": "Onion & Capsicum"
+        },
+        {
+            "pizza_name": "VEGGIE PARADISE",
+            "description": "Goldern Corn, Black Olives, Capsicum & Red Paprika"
+        },
+        {
+            "pizza_name": "PANEER MAKHANI",
+            "description": "Paneer and Capsicum on Makhani Sauce"
+        },
+        {
+            "pizza_name": "Indi Tandoori Paneer",
+            "description": "It is hot. It is spicy. It is oh-so-Indian. Tandoori paneer with capsicum I red paprika I mint mayo"
+        },
+        {
+            "pizza_name": "Moroccan Spice Pasta Pizza - Veg",
+            "description": "A pizza loaded with a spicy combination of Harissa sauce and delicious pasta."
+        },
+        {
+            "pizza_name": "Achari Do Pyaza",
+            "description": "Tangy & spicy achari flavours on a super cheesy onion pizza- as desi as it gets!"
+        },
+        {
+            "pizza_name": "The 4 Cheese Pizza",
+            "description": "Cheese Overloaded pizza with 4 different varieties of cheese and 4 times the cheese of a normal pizza, including a spicy hit of Ghost"
+        }
+    ]
+}
