@@ -1,0 +1,16 @@
+{
+    "categories": [
+        { "name": "veg pizzas" },
+        { "name": "non veg pizzas" },
+        { "name": "Side Orders" },
+        { "name": "Beverages" },
+        { "name": "Choice Of Crusts" },
+        { "name": "Choice Of Toppings" },
+        { "name": "Pasta" },
+        { "name": "Pizza Mania" },
+        { "name": "Burger Pizza" },
+        { "name": "chicken wings" },
+        { "name": "Chicken Lovers Pizza" },
+        { "name": "PARATHA PIZZA" }
+    ]
+}

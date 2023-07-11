@@ -109,6 +109,19 @@ Route::get("/_db-init",function(){
                 "item_uuid" => UuidUuid::uuid4()
             ]);
         }
+        
+        
+        $relativePath = __DIR__ . "/init/categories.json";
+        $categories = file_get_contents($relativePath);
+        $categories = json_decode($categories);
+        $categories = $categories->categories;
+        foreach($categories as $category){
+            $category = Category::create([
+                "name" => $category->name,
+                "description" => "this is inititialized stuff",
+                "category_uuid" => UuidUuid::uuid4()
+            ]);
+        }
         return response()->json("initialized",200);
     
 });
