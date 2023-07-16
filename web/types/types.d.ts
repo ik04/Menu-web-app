@@ -53,3 +53,16 @@ export interface CategoryItemsResponse {
   items: CategoryItem[];
   category_name: string;
 }
+
+export interface NavLinks {
+  name: string;
+  href: string;
+}
+
+export interface GlobalContextValue {
+  updateIsAuthenticated: (value: boolean) => void;
+  isAuthenticated: boolean;
+  email: string;
+  name: string;
+  userUuid: string;
+}

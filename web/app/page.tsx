@@ -1,4 +1,3 @@
-import Nabvar from "./components/Nabvar";
 import GetCategories from "@/lib/GetCategories";
 import { Category, CategoryResponse } from "@/types/types";
 import Link from "next/link";
@@ -10,8 +9,6 @@ export default async function Page() {
 
   return (
     <div className="bg-cream text-black">
-      <Nabvar />
-
       <div className="h-screen overflow-x-hidden">
         {/* Landing image */}
         <div className="w-screen bg-red-300 h-2/4 flex justify-center items-center">
@@ -41,3 +38,4 @@ export default async function Page() {
 }
 
 // todo : add meta data to each page (dynamic using ssr?)
+// todo : get a cream gradient for the pages

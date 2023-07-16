@@ -1,11 +1,13 @@
 "use client";
+import { GlobalContext } from "@/contexts/GlobalContext";
 import loginUser from "@/lib/LoginUser";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { updateIsAuthenticated } = useContext(GlobalContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

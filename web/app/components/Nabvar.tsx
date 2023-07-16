@@ -1,12 +1,13 @@
 "use client";
 import { GlobalContext } from "@/contexts/GlobalContext";
 import logout from "@/lib/Logout";
+import { NavLinks } from "@/types/types";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 
 export default function Nabvar() {
-  const [navbar, setNavbar] = useState(false);
   const { isAuthenticated, name } = useContext(GlobalContext);
+  console.log(isAuthenticated);
   const callLogout = async () => {
     try {
       console.log("click");
@@ -16,27 +17,21 @@ export default function Nabvar() {
       console.log(error);
     }
   };
-  const changeBackground = () => {
-    console.log(window.scrollY);
-    if (window.scrollY >= 66) {
-      setNavbar(true);
-    } else {
-      setNavbar(false);
-    }
-  };
 
-  // @apply shadow-[0_8px_32px_0_rgba(_31,38,135,0.37_)] backdrop-blur-[_4px_] border rounded-[10px] border-solid border-[rgba(_255,255,255,0.18_)];
-  // background: rgba(2, 84, 100, 0.25);
-  // -webkit-backdrop-filter: blur(4px);
+  const unauthenticatedLinks: NavLinks[] = [
+    { name: "Home", href: "/" },
+    { name: "Login", href: "/login" },
+    { name: "Register", href: "/register" },
+  ];
 
   return (
     <div
-      className={`navbar flex w-full justify-around items-center h-[70px] bg-azure`}
+      className={`z-50 navbar fixed flex w-full justify-around items-center h-[70px] bg-azure`}
     >
-      <div className="logo text-cream">
+      <Link href={"/"} className="logo text-cream cursor-pointer">
         Menu<span className="text-hotorange">Sphere</span>
-      </div>
-
+      </Link>
+      {/* add shopping cart is authenticated */}
       {isAuthenticated ? (
         <>
           <div className="flex justify-evenly items-center w-1/5">
@@ -54,12 +49,11 @@ export default function Nabvar() {
       ) : (
         <>
           <div className="flex justify-evenly items-center w-1/5">
-            <Link className="text-dalyellow" href="/login">
-              Login
-            </Link>
-            <Link className="text-dalyellow" href="/register">
-              Register
-            </Link>
+            {unauthenticatedLinks.map((navlink) => (
+              <Link className="text-dalyellow" href={navlink.href}>
+                {navlink.name}
+              </Link>
+            ))}
           </div>
         </>
       )}

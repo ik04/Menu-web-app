@@ -10,6 +10,9 @@ export const GlobalState: React.FC<GlobalStateProps> = ({ children }) => {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [userUuid, setUserUuid] = useState<string>("");
+  const updateIsAuthenticated = (value: boolean) => {
+    setIsAuthenticated(value);
+  };
   useEffect(() => {
     const callUserData = async () => {
       try {
@@ -29,7 +32,9 @@ export const GlobalState: React.FC<GlobalStateProps> = ({ children }) => {
     callUserData();
   }, []);
   return (
-    <GlobalContext.Provider value={{ isAuthenticated, email, name, userUuid }}>
+    <GlobalContext.Provider
+      value={{ updateIsAuthenticated, isAuthenticated, email, name, userUuid }}
+    >
       {children}
     </GlobalContext.Provider>
   );
