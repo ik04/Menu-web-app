@@ -82,7 +82,7 @@ class UserController extends Controller
         $validated = $validation->validated();
         $user = User::where("email",$validated["email"])->first();
         if(!$user){
-            return response()->json(["error"=>"User not Found, Please Register",401]);
+            return response()->json(["error"=>"User not Found, Please Register"],401);
         }
         if(!Hash::check($validated["password"],$user->password)){
             return response()->json(["error"=>"Incorrect Password"],401);
@@ -103,7 +103,7 @@ class UserController extends Controller
     public function userData(Request $request){
         if(!$request->hasCookie("at")){
             return response()->json([
-                'message' => "Unauthenticated"
+                'error' => "Unauthenticated"
             ],401);
         }
         if($token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->cookie("at"))){
@@ -111,12 +111,12 @@ class UserController extends Controller
         }
         else{
             return response()->json([
-                'message' => "unauthenticated"
+                'error' => "unauthenticated"
             ],401);
         }
         if(is_null($user)){
             return response()->json([
-                'message' => "Unauthenticated"
+                'error' => "Unauthenticated"
             ]);
         }
         return response() -> json([
