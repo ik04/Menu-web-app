@@ -1,27 +1,43 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import getCategoryItems from "@/lib/GetCategoryItems";
 import { CategoryItemsResponse, CategoryProps } from "@/types/types";
 import { AxiosResponse } from "axios";
 import Image from "next/image";
 import AddOrder from "@/lib/AddOrder";
 import { OrderButton } from "@/app/components/OrderButton";
+import { OrderContext } from "@/contexts/OrderContext";
 
-export default async function page({
-  params: { category_uuid },
-}: CategoryProps) {
+export default function page({ params: { category_uuid } }: CategoryProps) {
+  const { orders, setOrders } = useContext(OrderContext);
+  const [categoryItems, setCategoryItems] = useState<CategoryItemsResponse>();
   const formdata = {
     category_uuid: category_uuid,
   };
-  const categoryItems: CategoryItemsResponse = await getCategoryItems(formdata);
 
   // todo: make this responsive
   // todo: make cards cooler with framer and glassmorphisma
 
-  // const addOrderOnClick = (itemUuid: string) => {
-  //   const ordeResponse = AddOrder(itemUuid);
-  //   setIsAdded(true);
-  // };
+  useEffect(() => {
+    const fetchCategoryItems = async () => {
+      const response = await getCategoryItems(formdata);
+      setCategoryItems(response);
+    };
+    fetchCategoryItems();
+  }, [category_uuid]);
+
+  useEffect(() => {
+    // Load orders from localStorage when the component mounts
+    const savedOrders = localStorage.getItem("orders");
+    if (savedOrders) {
+      setOrders(JSON.parse(savedOrders));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save orders to localStorage every time the orders state changes
+    localStorage.setItem("orders", JSON.stringify(orders));
+  }, [orders]);
 
   return (
     <div className="h-screen">
@@ -31,6 +47,9 @@ export default async function page({
       <div className="flex justify-center items-center">
         <div className="w-[1500px] flex justify-around flex-wrap mt-28 space-x-5">
           {categoryItems?.items.map((item, index) => {
+            const order = orders?.find(
+              (order) => order.item_uuid === item.item_uuid
+            );
             console.log(item.image);
             return (
               <div className="m-4 bg-slate-400 rounded-xl p-4">
@@ -43,8 +62,17 @@ export default async function page({
                   />
                   <div className="text-cream">{item.name}</div>
                   <div className="text-azure/70">{item.price} Rs</div>
+
+                  {order ? (
+                    <OrderButton
+                      isset={true}
+                      quantity={order.quantity}
+                      itemUuid={item.item_uuid}
+                    />
+                  ) : (
+                    <OrderButton isset={false} itemUuid={item.item_uuid} />
+                  )}
                 </div>
-                <OrderButton itemUuid={item.item_uuid} />
               </div>
             );
           })}

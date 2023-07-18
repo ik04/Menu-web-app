@@ -69,3 +69,15 @@ export interface GlobalContextValue {
   name: string;
   userUuid: string;
 }
+export interface OrderContextValue {
+  orders: Order[];
+  setOrders: any; // ! fix this
+  // setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
+}
+export interface Order {
+  orderUuid: string;
+  quantity: number;
+  status: number;
+  total_price: number;
+  item_uuid: string;
+}

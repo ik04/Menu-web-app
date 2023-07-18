@@ -1,24 +1,29 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
-import { OrderStateProps } from "@/types/types";
+import { Order, OrderStateProps } from "@/types/types";
 import getUserPendingOrders from "@/lib/GetUserPendingOrders";
 import { GlobalContext } from "./GlobalContext";
 export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
   const { isAuthenticated } = useContext(GlobalContext);
-  //   console.log(isAuthenticated);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const updateOrder = (value: Order[]) => {
+    setOrders(value);
+  };
   useEffect(() => {
     const callUserOrders = async () => {
-      console.log(isAuthenticated);
-      if (isAuthenticated) {
-        const ordersResponse = await getUserPendingOrders();
-        console.log(ordersResponse.data.orders);
-      } else {
-        console.log("not logged in");
-      }
+      const ordersResponse = await getUserPendingOrders();
+      console.log(ordersResponse.data.orders);
+      setOrders(ordersResponse.data.orders);
     };
-    callUserOrders();
+    if (isAuthenticated) {
+      callUserOrders();
+    }
   }, [isAuthenticated]);
 
-  return <OrderContext.Provider value={{}}>{children}</OrderContext.Provider>;
+  return (
+    <OrderContext.Provider value={{ orders, setOrders }}>
+      {children}
+    </OrderContext.Provider>
+  );
 };
