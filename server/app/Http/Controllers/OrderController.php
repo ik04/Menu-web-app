@@ -160,7 +160,7 @@ class OrderController extends Controller
     public function getUserPendingOrders(Request $request){
         $userId = $request->user()->id;
 
-        $orders = Order::where("user_id",$userId)->where("status",Status::PENDING)->get(); // todo: make it a join query
+        $orders = Order::join("items","orders.item_id","=","items.id")->select("order_uuid","quantity","status","total_price","item_uuid")->where("user_id",$userId)->where("status",Status::PENDING)->get(); // todo: make it a join query
         return response()->json(["orders" => $orders,"message" => "pending orders"],200);
         
     }

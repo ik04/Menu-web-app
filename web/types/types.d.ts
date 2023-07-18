@@ -12,6 +12,9 @@ export interface loginFormData {
 export interface GlobalStateProps {
   children: ReactNode;
 }
+export interface OrderStateProps {
+  children: ReactNode;
+}
 
 export interface UserData {
   email: string;

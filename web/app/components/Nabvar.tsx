@@ -7,7 +7,7 @@ import React, { useContext, useState } from "react";
 
 export default function Nabvar() {
   const { isAuthenticated, name } = useContext(GlobalContext);
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
   const callLogout = async () => {
     try {
       console.log("click");

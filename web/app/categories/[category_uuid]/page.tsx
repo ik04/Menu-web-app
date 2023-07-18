@@ -1,9 +1,11 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import getCategoryItems from "@/lib/GetCategoryItems";
 import { CategoryItemsResponse, CategoryProps } from "@/types/types";
 import { AxiosResponse } from "axios";
 import Image from "next/image";
 import AddOrder from "@/lib/AddOrder";
+import { OrderButton } from "@/app/components/OrderButton";
 
 export default async function page({
   params: { category_uuid },
@@ -14,7 +16,7 @@ export default async function page({
   const categoryItems: CategoryItemsResponse = await getCategoryItems(formdata);
 
   // todo: make this responsive
-  // todo: make cards cooler with framer and glassmorphism
+  // todo: make cards cooler with framer and glassmorphisma
 
   // const addOrderOnClick = (itemUuid: string) => {
   //   const ordeResponse = AddOrder(itemUuid);
@@ -42,6 +44,7 @@ export default async function page({
                   <div className="text-cream">{item.name}</div>
                   <div className="text-azure/70">{item.price} Rs</div>
                 </div>
+                <OrderButton itemUuid={item.item_uuid} />
               </div>
             );
           })}

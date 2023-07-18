@@ -5,6 +5,7 @@ import axios from "axios";
 import Nabvar from "./components/Nabvar";
 
 import { Metadata } from "next";
+import { OrderState } from "@/contexts/OrderState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-cream`}>
         <GlobalState>
-          <Nabvar />
-          {children}
+          <OrderState>
+            <Nabvar />
+            {children}
+          </OrderState>
         </GlobalState>
       </body>
     </html>

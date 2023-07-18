@@ -25,7 +25,6 @@ export default function LoginForm() {
   };
   return (
     <div>
-      {" "}
       <>
         <section className="bg-white">
           <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen md:scale-100 lg:py-0">
