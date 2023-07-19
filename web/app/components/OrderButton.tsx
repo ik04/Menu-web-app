@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AddOrder from "../../lib/AddOrder";
 import { Toaster } from "react-hot-toast";
-import AddOrderQuantity from "@/lib/addOrderQuantity";
+import AddOrderQuantity from "@/lib/AddOrderQuantity";
+import DecrementOrderQuantity from "@/lib/DecrementOrderQuantity";
 
 // todo: fix order bugs
 
@@ -35,7 +36,24 @@ export const OrderButton = (props: {
       console.log(error);
     }
   };
-  const onOrderDecrement = (orderUuid: string) => {};
+  const onOrderDecrement = async (orderUuid: string | undefined) => {
+    try {
+      if (orderQuantity === 1) {
+        const subOrderQuantityResponse = await DecrementOrderQuantity(
+          orderUuid
+        );
+        setIsAdded(false);
+      } else {
+        const subOrderQuantityResponse = await DecrementOrderQuantity(
+          orderUuid
+        );
+        console.log(subOrderQuantityResponse.order);
+        setOrderQuantity(subOrderQuantityResponse.order.quantity);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const savedOrderQuantity = localStorage.getItem(
@@ -46,7 +64,6 @@ export const OrderButton = (props: {
     }
   }, []);
 
-  // Save order quantity to localStorage every time it changes
   useEffect(() => {
     localStorage.setItem(
       `orderQuantity-${props.itemUuid}`,
@@ -58,7 +75,9 @@ export const OrderButton = (props: {
     <>
       {isAdded ? (
         <div className="border border-white text-white text-xl rounded-full bg-hotorange p-3 w-[300px] my-2 flex justify-between">
-          <button className="minus">-</button>
+          <button className="minus" onClick={() => onOrderDecrement(orderUuid)}>
+            -
+          </button>
           <div className="quantity">{orderQuantity}</div>
           <button className="plus" onClick={() => onOrderIncrement(orderUuid)}>
             +
