@@ -17,6 +17,10 @@ export const OrderButton = (props: {
       console.log(error);
     }
   };
+  // todo: ui improvements
+  const onOrderIncrement = () => {};
+  const onOrderDecrement = () => {};
+
   return (
     <>
       <Toaster position="bottom-right" reverseOrder={false} />
