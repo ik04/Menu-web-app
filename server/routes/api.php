@@ -28,6 +28,8 @@ Route::prefix("v1")->group(function(){
     // * INIT ROUTES
     
     // * UNIVERSAL Routes   
+    Route::get("healthcheck",[ItemController::class,"healthCheck"]);
+    
     // * CATEGORY ROUTES
     Route::post("get-category-items",[CategoryController::class,"getCategoryItems"]);  
     Route::get("get-categories",[CategoryController::class,"getCategories"]);
@@ -56,7 +58,6 @@ Route::prefix("v1")->group(function(){
         Route::post("add-item",[ItemController::class,"addItem"]); 
     });
     
-    Route::get("healthcheck",[ItemController::class,"healthCheck"]);
     
     // * USER ROUTES
     Route::get("get-user-data",[UserController::class,"userData"]);

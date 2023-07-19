@@ -75,7 +75,7 @@ export interface OrderContextValue {
   // setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
 }
 export interface Order {
-  orderUuid: string;
+  order_uuid: string;
   quantity: number;
   status: number;
   total_price: number;

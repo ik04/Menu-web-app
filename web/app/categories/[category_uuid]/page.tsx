@@ -68,6 +68,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
                       isset={true}
                       quantity={order.quantity}
                       itemUuid={item.item_uuid}
+                      orderUuid={order.order_uuid}
                     />
                   ) : (
                     <OrderButton isset={false} itemUuid={item.item_uuid} />
