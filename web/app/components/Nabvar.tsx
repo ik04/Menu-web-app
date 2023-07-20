@@ -11,6 +11,7 @@ export default function Nabvar() {
   const callLogout = async () => {
     try {
       console.log("click");
+      localStorage.clear();
       await logout();
       location.href = "/";
     } catch (error) {
@@ -49,8 +50,8 @@ export default function Nabvar() {
       ) : (
         <>
           <div className="flex justify-evenly items-center w-1/5">
-            {unauthenticatedLinks.map((navlink) => (
-              <Link className="text-dalyellow" href={navlink.href}>
+            {unauthenticatedLinks.map((navlink, index) => (
+              <Link key={index} className="text-dalyellow" href={navlink.href}>
                 {navlink.name}
               </Link>
             ))}

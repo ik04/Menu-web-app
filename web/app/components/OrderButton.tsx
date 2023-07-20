@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AddOrder from "../../lib/AddOrder";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import AddOrderQuantity from "@/lib/AddOrderQuantity";
 import DecrementOrderQuantity from "@/lib/DecrementOrderQuantity";
+import { GlobalContext } from "@/contexts/GlobalContext";
+import getUserPendingOrders from "@/lib/GetUserPendingOrders";
 
 // todo: fix order bugs
 
@@ -15,15 +17,20 @@ export const OrderButton = (props: {
   const [isAdded, setIsAdded] = useState(props.isset);
   const [orderQuantity, setOrderQuantity] = useState(props.quantity);
   const [orderUuid, setOrderUuid] = useState(props.orderUuid);
+  const { isAuthenticated } = useContext(GlobalContext);
   const addOrderOnClick = async (itemUuid: string) => {
-    try {
-      const orderResponse = await AddOrder(itemUuid);
-      console.log(orderResponse);
-      setIsAdded(true);
-      setOrderQuantity(1);
-      setOrderUuid(orderResponse.order_uuid);
-    } catch (error: any) {
-      console.log(error);
+    if (!isAuthenticated) {
+      location.href = "/login";
+    } else {
+      try {
+        const orderResponse = await AddOrder(itemUuid);
+        console.log(orderResponse);
+        setIsAdded(true);
+        setOrderQuantity(1);
+        setOrderUuid(orderResponse.order_uuid);
+      } catch (error: any) {
+        console.log(error);
+      }
     }
   };
   // todo: ui improvements
@@ -42,6 +49,7 @@ export const OrderButton = (props: {
         const subOrderQuantityResponse = await DecrementOrderQuantity(
           orderUuid
         );
+        console.log(subOrderQuantityResponse.order);
         setIsAdded(false);
       } else {
         const subOrderQuantityResponse = await DecrementOrderQuantity(
@@ -50,6 +58,21 @@ export const OrderButton = (props: {
         console.log(subOrderQuantityResponse.order);
         setOrderQuantity(subOrderQuantityResponse.order.quantity);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchUserOrders = async () => {
+    // Replace this with your API call to fetch the user's orders.
+    try {
+      const userOrders = await getUserPendingOrders();
+      userOrders.data.forEach((order) => {
+        if (order.item_uuid === props.itemUuid) {
+          setIsAdded(true);
+          setOrderQuantity(order.quantity);
+          setOrderUuid(order.order_uuid);
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -73,8 +96,12 @@ export const OrderButton = (props: {
 
   return (
     <>
+      <Toaster />
       {isAdded ? (
-        <div className="border border-white text-white text-xl rounded-full bg-hotorange p-3 w-[300px] my-2 flex justify-between">
+        <div
+          key={props.itemUuid}
+          className=" text-white text-xl rounded-full bg-azure p-3 w-[300px] my-2 flex justify-between"
+        >
           <button className="minus" onClick={() => onOrderDecrement(orderUuid)}>
             -
           </button>
@@ -85,8 +112,9 @@ export const OrderButton = (props: {
         </div>
       ) : (
         <button
+          key={props.itemUuid}
           onClick={() => addOrderOnClick(props.itemUuid)}
-          className="border border-white text-white rounded-full bg-hotorange p-3 w-[300px] my-2"
+          className=" text-white rounded-full bg-azure p-3 w-[300px] my-2"
         >
           Add to Cart
         </button>

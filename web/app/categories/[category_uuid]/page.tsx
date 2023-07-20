@@ -52,7 +52,10 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
             );
             console.log(item.image);
             return (
-              <div className="m-4 bg-slate-400 rounded-xl p-4">
+              <div
+                key={item.item_uuid}
+                className="m-4 bg-slate-400 rounded-xl p-4"
+              >
                 <div className="flex flex-col space-y-2">
                   <Image
                     alt={`${item.name}`}
@@ -84,5 +87,3 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
 }
 
 // todo: add tailwind extention and better comments and rename prolly
-// ! how do i persisyt the quantity on refresh, solve
-// use an if statement and orderContext
