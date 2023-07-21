@@ -24,7 +24,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
       setCategoryItems(response);
     };
     fetchCategoryItems();
-  }, [category_uuid]);
+  }, [category_uuid, orders]);
 
   console.log(orders);
 
