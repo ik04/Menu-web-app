@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { OrderContext } from "./OrderContext";
 import { Order, OrderStateProps } from "@/types/types";
 import getUserPendingOrders from "@/lib/GetUserPendingOrders";
@@ -10,16 +10,29 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
   const updateOrder = (value: Order[]) => {
     setOrders(value);
   };
-  useEffect(() => {
-    const callUserOrders = async () => {
-      const ordersResponse = await getUserPendingOrders();
-      // console.log(ordersResponse);
-      setOrders(ordersResponse);
-    };
+  const callUserOrders = useMemo(async () => {
     if (isAuthenticated) {
-      callUserOrders();
+      try {
+        const ordersResponse = await getUserPendingOrders();
+        console.log(ordersResponse);
+        return ordersResponse;
+      } catch (error) {
+        console.log(error);
+        return [];
+      }
+    } else {
+      return [];
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    const fetchUserOrders = async () => {
+      const ordersResponse = await callUserOrders;
+      setOrders(ordersResponse);
+    };
+
+    fetchUserOrders();
+  }, [callUserOrders]);
 
   return (
     <OrderContext.Provider value={{ orders, setOrders }}>
