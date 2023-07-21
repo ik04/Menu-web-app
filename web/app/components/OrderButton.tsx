@@ -5,6 +5,7 @@ import AddOrderQuantity from "@/lib/AddOrderQuantity";
 import DecrementOrderQuantity from "@/lib/DecrementOrderQuantity";
 import { GlobalContext } from "@/contexts/GlobalContext";
 import getUserPendingOrders from "@/lib/GetUserPendingOrders";
+import { OrderContext } from "@/contexts/OrderContext";
 
 // todo: fix order bugs
 
@@ -18,9 +19,13 @@ export const OrderButton = (props: {
   const [orderQuantity, setOrderQuantity] = useState(props.quantity);
   const [orderUuid, setOrderUuid] = useState(props.orderUuid);
   const { isAuthenticated } = useContext(GlobalContext);
+  const { orders } = useContext(OrderContext);
   const addOrderOnClick = async (itemUuid: string) => {
     if (!isAuthenticated) {
-      location.href = "/login";
+      toast.error("Please Login In");
+      setTimeout(() => {
+        location.href = "/login";
+      }, 2000);
     } else {
       try {
         const orderResponse = await AddOrder(itemUuid);
@@ -62,11 +67,11 @@ export const OrderButton = (props: {
       console.log(error);
     }
   };
+
   const fetchUserOrders = async () => {
     // Replace this with your API call to fetch the user's orders.
     try {
-      const userOrders = await getUserPendingOrders();
-      userOrders.data.forEach((order) => {
+      orders.forEach((order) => {
         if (order.item_uuid === props.itemUuid) {
           setIsAdded(true);
           setOrderQuantity(order.quantity);
@@ -79,20 +84,24 @@ export const OrderButton = (props: {
   };
 
   useEffect(() => {
-    const savedOrderQuantity = localStorage.getItem(
-      `orderQuantity-${props.itemUuid}`
-    );
-    if (savedOrderQuantity) {
-      setOrderQuantity(Number(savedOrderQuantity));
-    }
+    fetchUserOrders();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      `orderQuantity-${props.itemUuid}`,
-      String(orderQuantity)
-    );
-  }, [orderQuantity]);
+  // useEffect(() => {
+  //   const savedOrderQuantity = localStorage.getItem(
+  //     `orderQuantity-${props.itemUuid}`
+  //   );
+  //   if (savedOrderQuantity) {
+  //     setOrderQuantity(Number(savedOrderQuantity));
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem(
+  //     `orderQuantity-${props.itemUuid}`,
+  //     String(orderQuantity)
+  //   );
+  // }, [orderQuantity]);
 
   return (
     <>
@@ -122,4 +131,3 @@ export const OrderButton = (props: {
     </>
   );
 };
-// ! fix all errors

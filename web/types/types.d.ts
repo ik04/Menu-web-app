@@ -4,16 +4,18 @@ export interface userFormdata {
   password: string;
   password_confirmation: string;
 }
+
 export interface loginFormData {
   email: string;
   password: string;
 }
 
 export interface GlobalStateProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
+
 export interface OrderStateProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export interface UserData {
@@ -69,11 +71,12 @@ export interface GlobalContextValue {
   name: string;
   userUuid: string;
 }
+
 export interface OrderContextValue {
   orders: Order[];
-  setOrders: any; // ! fix this
-  // setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
+  setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
 }
+
 export interface Order {
   order_uuid: string;
   quantity: number;

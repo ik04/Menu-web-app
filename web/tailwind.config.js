@@ -14,6 +14,7 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    // #d93c68
     extend: {
       colors: {
         cream: "#F8F1F1",

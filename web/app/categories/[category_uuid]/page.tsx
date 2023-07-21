@@ -26,18 +26,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
     fetchCategoryItems();
   }, [category_uuid]);
 
-  useEffect(() => {
-    // Load orders from localStorage when the component mounts
-    const savedOrders = localStorage.getItem("orders");
-    if (savedOrders) {
-      setOrders(JSON.parse(savedOrders));
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save orders to localStorage every time the orders state changes
-    localStorage.setItem("orders", JSON.stringify(orders));
-  }, [orders]);
+  console.log(orders);
 
   return (
     <div className="h-screen">
@@ -47,7 +36,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
       <div className="flex justify-center items-center">
         <div className="w-[1500px] flex justify-around flex-wrap mt-28 space-x-5">
           {categoryItems?.items.map((item, index) => {
-            const order = orders?.find(
+            const order = orders.find(
               (order) => order.item_uuid === item.item_uuid
             );
             console.log(item.image);
