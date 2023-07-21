@@ -9,17 +9,12 @@ import getUserPendingOrders from "@/lib/GetUserPendingOrders";
 
 // todo: fix order bugs
 
-export const OrderButton = (props: {
-  itemUuid: string;
-  quantity?: number;
-  isset: boolean;
-  orderUuid?: string;
-}) => {
-  const [isAdded, setIsAdded] = useState(props.isset);
-  const [orderQuantity, setOrderQuantity] = useState(props.quantity);
-  const [orderUuid, setOrderUuid] = useState(props.orderUuid);
-  // const { orders } = useContext(OrderContext);
+export const OrderButton = (props: { itemUuid: string }) => {
+  const [isAdded, setIsAdded] = useState<boolean>();
+  const [orderQuantity, setOrderQuantity] = useState<number | undefined>();
+  const [orderUuid, setOrderUuid] = useState<string | undefined>();
   const { isAuthenticated } = useContext(GlobalContext);
+  // const { orders } = useContext(OrderContext);
   const addOrderOnClick = async (itemUuid: string) => {
     if (!isAuthenticated) {
       toast.error("Please Login In");

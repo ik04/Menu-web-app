@@ -13,9 +13,8 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
   useEffect(() => {
     const callUserOrders = async () => {
       const ordersResponse = await getUserPendingOrders();
-      console.log(ordersResponse);
+      // console.log(ordersResponse);
       setOrders(ordersResponse);
-      console.log("hahahahhaahhahaah");
     };
     if (isAuthenticated) {
       callUserOrders();

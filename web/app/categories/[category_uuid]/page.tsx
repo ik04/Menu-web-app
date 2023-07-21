@@ -9,7 +9,6 @@ import { OrderButton } from "@/app/components/OrderButton";
 import { OrderContext } from "@/contexts/OrderContext";
 
 export default function page({ params: { category_uuid } }: CategoryProps) {
-  const { orders, setOrders } = useContext(OrderContext);
   const [categoryItems, setCategoryItems] = useState<CategoryItemsResponse>();
   const formdata = {
     category_uuid: category_uuid,
@@ -24,9 +23,9 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
       setCategoryItems(response);
     };
     fetchCategoryItems();
-  }, [category_uuid, orders]);
+  }, [category_uuid]);
 
-  console.log(orders);
+  // console.log(orders);
 
   return (
     <div className="h-screen">
@@ -36,9 +35,6 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
       <div className="flex justify-center items-center">
         <div className="w-[1500px] flex justify-around flex-wrap mt-28 space-x-5">
           {categoryItems?.items.map((item, index) => {
-            const order = orders.find(
-              (order) => order.item_uuid === item.item_uuid
-            );
             console.log(item.image);
             return (
               <div
@@ -55,7 +51,8 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
                   <div className="text-cream">{item.name}</div>
                   <div className="text-azure/70">{item.price} Rs</div>
 
-                  {order ? (
+                  <OrderButton itemUuid={item.item_uuid} />
+                  {/* {order ? (
                     <OrderButton
                       isset={true}
                       quantity={order.quantity}
@@ -64,7 +61,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
                     />
                   ) : (
                     <OrderButton isset={false} itemUuid={item.item_uuid} />
-                  )}
+                  )} */}
                 </div>
               </div>
             );
