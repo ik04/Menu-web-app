@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Status;
 use App\Models\Deal;
+use App\Enums\Status;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\User;
@@ -39,7 +39,7 @@ class OrderController extends Controller
         $actualUserId = $request->user()->id;
 
         $existingOrder = Order::where('item_id', $actualItemId)
-        ->where('user_id', $actualUserId)
+        ->where('user_id', $actualUserId)->where("status",Status::PENDING->value)
         ->exists();
 
     if ($existingOrder) {
@@ -129,32 +129,45 @@ class OrderController extends Controller
     }
     
     
-    public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
-    { // todo: make it accept multiple responses and make themm all complete
-
-        $requestData = $request->all();
-
-        if (!isset($requestData['orders'])) {
-            return response()->json(['message' => 'Invalid request data. Missing "orders" key.'], 400);
+    public function finishOrder(Request $request)
+    {
+        $userId = $request->user()->id;
+        $orders = Order::where("status", Status::PENDING->value)->where("user_id", $userId)->get();
+    
+        foreach ($orders as $order) {
+            $order->status = Status::COMPLETE->value; // Update the status to completed
+            $order->save();
         }
-
-        $validation = Validator::make($request->all(), [
-            "orders.*.order_uuid" => "required|uuid",
-        ]);
-        $validated = $validation->validated();
-
-        $orders = [];
-
-        foreach ($validated['orders'] as $checkedoutOrder) {
-            $order = Order::where("order_uuid", $checkedoutOrder["order_uuid"])->first();
-                $order->status = Status::COMPLETE->value;
-                $order->save();
-
-                $orders[] = $order;
-        }
-        return response()->json(["message"=>"Orders Completed!","orders"=>$orders],200);
-
+    
+        return response()->json(["message" => "Orders Completed!", "orders" => $orders], 200);
     }
+  
+    // public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
+    // { // todo: make it accept multiple responses and make themm all complete
+
+    //     $requestData = $request->all();
+
+    //     if (!isset($requestData['orders'])) {
+    //         return response()->json(['message' => 'Invalid request data. Missing "orders" key.'], 400);
+    //     }
+
+    //     $validation = Validator::make($request->all(), [
+    //         "orders.*.order_uuid" => "required|uuid",
+    //     ]);
+    //     $validated = $validation->validated();
+
+    //     $orders = [];
+
+    //     foreach ($validated['orders'] as $checkedoutOrder) {
+    //         $order = Order::where("order_uuid", $checkedoutOrder["order_uuid"])->first();
+    //             $order->status = Status::COMPLETE->value;
+    //             $order->save();
+
+    //             $orders[] = $order;
+    //     }
+    //     return response()->json(["message"=>"Orders Completed!","orders"=>$orders],200);
+
+    // }
     
     
     public function getUserPendingOrders(Request $request){

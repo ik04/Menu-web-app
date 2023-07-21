@@ -2,16 +2,19 @@
 import { GlobalContext } from "@/contexts/GlobalContext";
 import logout from "@/lib/Logout";
 import { NavLinks } from "@/types/types";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
+import { ShoppingCart } from "lucide-react";
+import { OrderContext } from "@/contexts/OrderContext";
 
 export default function Nabvar() {
   const { isAuthenticated, name } = useContext(GlobalContext);
-  // console.log(isAuthenticated);
+  const { ordersCount } = useContext(OrderContext);
+  console.log(ordersCount);
   const callLogout = async () => {
     try {
       console.log("click");
-      localStorage.clear();
       await logout();
       location.href = "/";
     } catch (error) {
@@ -36,15 +39,24 @@ export default function Nabvar() {
       {isAuthenticated ? (
         <>
           <div className="flex justify-evenly items-center w-1/5">
+            <button className="text-dalyellow" onClick={callLogout}>
+              Logout
+            </button>
             <Link
               className="text-dalyellow text-xl font-mono font-extrabold"
               href="/"
             >
               Hi {name}
             </Link>
-            <button className="text-dalyellow" onClick={callLogout}>
-              Logout
-            </button>
+            <Link
+              className="text-dalyellow text-xl flex font-mono font-extrabold justify-center items-center"
+              href="/"
+            >
+              <ShoppingCart />
+              <p className="rounded-[9px] -ml-[10px] mb-[15px] align-top text-white  bg-red-700 text-center text-xs w-[15px]">
+                {ordersCount}
+              </p>
+            </Link>
           </div>
         </>
       ) : (

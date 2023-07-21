@@ -14,7 +14,7 @@ export const OrderButton = (props: { itemUuid: string }) => {
   const [orderQuantity, setOrderQuantity] = useState<number | undefined>();
   const [orderUuid, setOrderUuid] = useState<string | undefined>();
   const { isAuthenticated } = useContext(GlobalContext);
-  const { orders } = useContext(OrderContext);
+  const { orders, setOrdersCount } = useContext(OrderContext);
   const addOrderOnClick = async (itemUuid: string) => {
     if (!isAuthenticated) {
       toast.error("Please Login In");
@@ -28,6 +28,7 @@ export const OrderButton = (props: { itemUuid: string }) => {
         setIsAdded(true);
         setOrderQuantity(1);
         setOrderUuid(orderResponse.order_uuid);
+        setOrdersCount((prev) => prev + 1);
       } catch (error: any) {
         console.log(error);
       }
@@ -65,8 +66,8 @@ export const OrderButton = (props: { itemUuid: string }) => {
 
   useEffect(() => {
     const fetchUserOrders = async () => {
-      console.log(orders);
-      console.log("test");
+      // console.log(orders);
+      // console.log("test");
       try {
         orders.forEach((order) => {
           if (order.item_uuid === props.itemUuid) {

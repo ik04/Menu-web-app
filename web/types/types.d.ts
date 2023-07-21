@@ -75,6 +75,8 @@ export interface GlobalContextValue {
 export interface OrderContextValue {
   orders: Order[];
   setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
+  ordersCount?: number;
+  setOrdersCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface Order {

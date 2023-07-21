@@ -7,6 +7,7 @@ import { GlobalContext } from "./GlobalContext";
 export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
   const { isAuthenticated } = useContext(GlobalContext);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersCount, setOrdersCount] = useState(0);
   const updateOrder = (value: Order[]) => {
     setOrders(value);
   };
@@ -29,13 +30,16 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
     const fetchUserOrders = async () => {
       const ordersResponse = await callUserOrders;
       setOrders(ordersResponse);
+      setOrdersCount(ordersResponse.length);
     };
 
     fetchUserOrders();
   }, [callUserOrders]);
 
   return (
-    <OrderContext.Provider value={{ orders, setOrders }}>
+    <OrderContext.Provider
+      value={{ orders, setOrders, ordersCount, setOrdersCount }}
+    >
       {children}
     </OrderContext.Provider>
   );

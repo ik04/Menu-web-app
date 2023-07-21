@@ -69,7 +69,7 @@ Route::prefix("v1")->group(function(){
     // * ORDER ROUTES 
     Route::post("add-order",[OrderController::class,"addOrder"]);
     Route::delete("delete-order",[OrderController::class,"deleteOrder"]);
-    Route::post("finish-order",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
+    Route::post("finish-orders",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?
     Route::post("add-order-quantity",[OrderController::class,"incrementOrderQuantity"]); 
     Route::post("decrease-order-quantity",[OrderController::class,"decrementOrderQuantity"]); 
     Route::get("get-pending-orders",[OrderController::class,"getUserPendingOrders"]); // * checkout route instead
