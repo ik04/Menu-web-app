@@ -4,9 +4,7 @@ import getCategoryItems from "@/lib/GetCategoryItems";
 import { CategoryItemsResponse, CategoryProps } from "@/types/types";
 import { AxiosResponse } from "axios";
 import Image from "next/image";
-import AddOrder from "@/lib/AddOrder";
 import { OrderButton } from "@/app/components/OrderButton";
-import { OrderContext } from "@/contexts/OrderContext";
 
 export default function page({ params: { category_uuid } }: CategoryProps) {
   const [categoryItems, setCategoryItems] = useState<CategoryItemsResponse>();
@@ -24,8 +22,6 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
     };
     fetchCategoryItems();
   }, [category_uuid]);
-
-  // console.log(orders);
 
   return (
     <div className="h-screen">
@@ -52,16 +48,6 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
                   <div className="text-azure/70">{item.price} Rs</div>
 
                   <OrderButton itemUuid={item.item_uuid} />
-                  {/* {order ? (
-                    <OrderButton
-                      isset={true}
-                      quantity={order.quantity}
-                      itemUuid={item.item_uuid}
-                      orderUuid={order.order_uuid}
-                    />
-                  ) : (
-                    <OrderButton isset={false} itemUuid={item.item_uuid} />
-                  )} */}
                 </div>
               </div>
             );
