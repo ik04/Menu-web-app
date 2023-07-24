@@ -53,7 +53,11 @@ export default function Nabvar() {
               href="/"
             >
               <ShoppingCart />
-              <p className="rounded-[9px] -ml-[10px] mb-[15px] align-top text-white  bg-red-700 text-center text-xs w-[15px]">
+              <p
+                className={`rounded-[9px] ${
+                  ordersCount === 0 ? "hidden" : ""
+                } -ml-[10px] mb-[15px] align-top text-white  bg-red-700 text-center text-xs w-[15px]`}
+              >
                 {ordersCount}
               </p>
             </Link>

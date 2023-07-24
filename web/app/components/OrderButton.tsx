@@ -52,6 +52,7 @@ export const OrderButton = (props: { itemUuid: string }) => {
         );
         console.log(subOrderQuantityResponse.order);
         setIsAdded(false);
+        setOrdersCount((prev) => prev - 1);
       } else {
         const subOrderQuantityResponse = await DecrementOrderQuantity(
           orderUuid
