@@ -83,6 +83,8 @@ export interface Order {
   order_uuid: string;
   quantity: number;
   status: number;
+  image: string;
   total_price: number;
   item_uuid: string;
+  name: string;
 }

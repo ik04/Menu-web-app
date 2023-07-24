@@ -11,7 +11,7 @@ import { OrderContext } from "@/contexts/OrderContext";
 export default function Nabvar() {
   const { isAuthenticated, name } = useContext(GlobalContext);
   const { ordersCount } = useContext(OrderContext);
-  console.log(ordersCount);
+  // console.log(ordersCount);
   const callLogout = async () => {
     try {
       console.log("click");
