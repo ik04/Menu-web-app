@@ -9,7 +9,10 @@ import getUserPendingOrders from "@/lib/GetUserPendingOrders";
 
 // todo: fix order bugs
 
-export const OrderButton = (props: { itemUuid: string }) => {
+export const OrderButton = (props: {
+  itemUuid: string;
+  orderMode: boolean;
+}) => {
   const [isAdded, setIsAdded] = useState<boolean>();
   const [orderQuantity, setOrderQuantity] = useState<number | undefined>();
   const [orderUuid, setOrderUuid] = useState<string | undefined>();
@@ -52,6 +55,9 @@ export const OrderButton = (props: { itemUuid: string }) => {
         );
         console.log(subOrderQuantityResponse.order);
         setIsAdded(false);
+        if (!props.orderMode) {
+          location.href = "/checkout";
+        }
         setOrdersCount((prev) => prev - 1);
       } else {
         const subOrderQuantityResponse = await DecrementOrderQuantity(
@@ -91,7 +97,11 @@ export const OrderButton = (props: { itemUuid: string }) => {
       {isAdded ? (
         <div
           key={props.itemUuid}
-          className=" text-white text-xl rounded-full bg-azure p-3 w-[300px] my-2 flex justify-between"
+          className={`${
+            props.orderMode
+              ? "text-white text-xl rounded-full bg-azure p-3 w-[300px] my-2 flex justify-between"
+              : "text-white text-xl bg-azure p-2 flex justify-between w-[100px]"
+          }`}
         >
           <button className="minus" onClick={() => onOrderDecrement(orderUuid)}>
             -

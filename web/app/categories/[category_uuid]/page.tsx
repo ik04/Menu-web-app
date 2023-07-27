@@ -47,7 +47,7 @@ export default function page({ params: { category_uuid } }: CategoryProps) {
                   <div className="text-cream">{item.name}</div>
                   <div className="text-azure/70">{item.price} Rs</div>
 
-                  <OrderButton itemUuid={item.item_uuid} />
+                  <OrderButton orderMode={true} itemUuid={item.item_uuid} />
                 </div>
               </div>
             );

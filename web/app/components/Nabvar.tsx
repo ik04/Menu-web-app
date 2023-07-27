@@ -4,14 +4,18 @@ import logout from "@/lib/Logout";
 import { NavLinks } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { OrderContext } from "@/contexts/OrderContext";
+import { Toaster, toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { test } from "node:test";
 
 export default function Nabvar() {
+  const router = useRouter();
   const { isAuthenticated, name } = useContext(GlobalContext);
   const { ordersCount } = useContext(OrderContext);
-  // console.log(ordersCount);
+
   const callLogout = async () => {
     try {
       console.log("click");
@@ -19,6 +23,18 @@ export default function Nabvar() {
       location.href = "/";
     } catch (error) {
       console.log(error);
+    }
+  };
+  const cartRedirect = () => {
+    if (ordersCount != 0) {
+      location.href = "/checkout";
+    } else {
+      toast(
+        "Satisfy your taste buds with mouthwatering delights! Add scrumptious treats to your cart and let the flavors dance on your palate! 🍔🌯",
+        {
+          duration: 6000,
+        }
+      );
     }
   };
 
@@ -32,6 +48,7 @@ export default function Nabvar() {
     <div
       className={`z-50 navbar fixed flex w-full justify-around items-center h-[70px] bg-azure`}
     >
+      <Toaster />
       <Link href={"/"} className="logo text-cream cursor-pointer">
         Menu<span className="text-hotorange">Sphere</span>
       </Link>
@@ -48,9 +65,10 @@ export default function Nabvar() {
             >
               Hi {name}
             </Link>
-            <Link
+
+            <button
               className="text-dalyellow text-xl flex font-mono font-extrabold justify-center items-center"
-              href="/"
+              onClick={cartRedirect}
             >
               <ShoppingCart />
               <p
@@ -60,7 +78,7 @@ export default function Nabvar() {
               >
                 {ordersCount}
               </p>
-            </Link>
+            </button>
           </div>
         </>
       ) : (
@@ -77,3 +95,4 @@ export default function Nabvar() {
     </div>
   );
 }
+// todo: add loading state
