@@ -23,12 +23,12 @@ use Ramsey\Uuid\Uuid as UuidUuid;
 |
 */
 
+Route::post("healthcheck",[ItemController::class,"healthCheck"]);
 
 Route::prefix("v1")->group(function(){
     // * INIT ROUTES
     
     // * UNIVERSAL Routes   
-    Route::get("healthcheck",[ItemController::class,"healthCheck"]);
     
     // * CATEGORY ROUTES
     Route::post("get-category-items",[CategoryController::class,"getCategoryItems"]);  
@@ -63,10 +63,14 @@ Route::prefix("v1")->group(function(){
     Route::get("get-user-data",[UserController::class,"userData"]);
     Route::post("register",[UserController::class,"register"]);
     Route::post("login",[UserController::class,"login"]);
+    Route::post("is-logged-in", function(){
+        return response()->noContent();
+});
     
     Route::middleware(['auth:sanctum'])->group(function (){
     Route::post("logout",[UserController::class,"logout"]);
     // * ORDER ROUTES 
+    Route::get("get-order-count",[OrderController::class,"getOrderCount"]);
     Route::post("add-order",[OrderController::class,"addOrder"]);
     Route::delete("delete-order",[OrderController::class,"deleteOrder"]);
     Route::post("finish-orders",[OrderController::class,"finishOrder"]); // ? would it be wise to shift the completed orders to a new table, if so how do i do that?

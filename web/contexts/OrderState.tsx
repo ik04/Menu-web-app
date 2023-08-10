@@ -8,6 +8,7 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
   const { isAuthenticated } = useContext(GlobalContext);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersCount, setOrdersCount] = useState(0);
+  const [orderTotalPrice, setOrderTotalPrice] = useState(0);
   const updateOrder = (value: Order[]) => {
     setOrders(value);
   };
@@ -31,6 +32,9 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
       const ordersResponse = await callUserOrders;
       setOrders(ordersResponse);
       setOrdersCount(ordersResponse.length);
+      ordersResponse.forEach((order) => {
+        setOrderTotalPrice((prev) => prev + order.total_price);
+      });
     };
 
     fetchUserOrders();
@@ -38,7 +42,14 @@ export const OrderState: React.FC<OrderStateProps> = ({ children }) => {
 
   return (
     <OrderContext.Provider
-      value={{ orders, setOrders, ordersCount, setOrdersCount }}
+      value={{
+        orders,
+        setOrders,
+        ordersCount,
+        setOrdersCount,
+        orderTotalPrice,
+        setOrderTotalPrice,
+      }}
     >
       {children}
     </OrderContext.Provider>

@@ -77,6 +77,8 @@ export interface OrderContextValue {
   setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
   ordersCount?: number;
   setOrdersCount: React.Dispatch<React.SetStateAction<number>>;
+  orderTotalPrice?: number;
+  setOrderTotalPrice: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface Order {

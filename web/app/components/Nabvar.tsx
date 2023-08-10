@@ -26,7 +26,7 @@ export default function Nabvar() {
     }
   };
   const cartRedirect = () => {
-    if (ordersCount != 0) {
+    if (ordersCount !== 0) {
       location.href = "/checkout";
     } else {
       toast(
@@ -48,7 +48,6 @@ export default function Nabvar() {
     <div
       className={`z-50 navbar fixed flex w-full justify-around items-center h-[70px] bg-azure`}
     >
-      <Toaster />
       <Link href={"/"} className="logo text-cream cursor-pointer">
         Menu<span className="text-hotorange">Sphere</span>
       </Link>

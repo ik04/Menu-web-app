@@ -17,7 +17,8 @@ export const OrderButton = (props: {
   const [orderQuantity, setOrderQuantity] = useState<number | undefined>();
   const [orderUuid, setOrderUuid] = useState<string | undefined>();
   const { isAuthenticated } = useContext(GlobalContext);
-  const { orders, setOrdersCount } = useContext(OrderContext);
+  const { orders, setOrdersCount, setOrderTotalPrice } =
+    useContext(OrderContext);
   const addOrderOnClick = async (itemUuid: string) => {
     if (!isAuthenticated) {
       toast.error("Please Login In");
@@ -41,8 +42,9 @@ export const OrderButton = (props: {
   const onOrderIncrement = async (orderUuid: string | undefined) => {
     try {
       const addOrderQuantityResponse = await AddOrderQuantity(orderUuid);
-      console.log(addOrderQuantityResponse.order);
       setOrderQuantity(addOrderQuantityResponse.order.quantity);
+      console.log(addOrderQuantityResponse.order);
+      setOrderTotalPrice((prev) => prev + addOrderQuantityResponse.order.price);
     } catch (error) {
       console.log(error);
     }
@@ -53,6 +55,7 @@ export const OrderButton = (props: {
         const subOrderQuantityResponse = await DecrementOrderQuantity(
           orderUuid
         );
+
         console.log(subOrderQuantityResponse.order);
         setIsAdded(false);
         if (!props.orderMode) {
@@ -65,6 +68,9 @@ export const OrderButton = (props: {
         );
         console.log(subOrderQuantityResponse.order);
         setOrderQuantity(subOrderQuantityResponse.order.quantity);
+        setOrderTotalPrice(
+          (prev) => prev - subOrderQuantityResponse.order.price
+        );
       }
     } catch (error) {
       console.log(error);
@@ -73,8 +79,6 @@ export const OrderButton = (props: {
 
   useEffect(() => {
     const fetchUserOrders = async () => {
-      // console.log(orders);
-      // console.log("test");
       try {
         orders.forEach((order) => {
           if (order.item_uuid === props.itemUuid) {
@@ -115,7 +119,11 @@ export const OrderButton = (props: {
         <button
           key={props.itemUuid}
           onClick={() => addOrderOnClick(props.itemUuid)}
-          className=" text-white rounded-full bg-azure p-3 w-[300px] my-2"
+          className={`${
+            props.orderMode
+              ? "text-white rounded-full bg-azure p-3 w-[300px] my-2"
+              : "hidden"
+          }`}
         >
           Add to Cart
         </button>

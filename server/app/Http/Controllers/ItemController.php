@@ -33,8 +33,9 @@ class ItemController extends Controller
     
 
     public function healthCheck(Request $request){
-        
-        return response()->json("Hi from Menu-App ~ ishaan khurana",200);
+        $order = Order::join("items","orders.item_id","=","items.id")->where("order_uuid","6a80559e-9740-45d2-8411-fdeab8165f9b")->select("quantity","total_price","status","order_uuid","items.price")->first();
+
+        return response()->json($order,200);
     }
 
     public function getCategoryId($categoryId)

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("image");
-            $table->string("price");
+            $table->float("price");
             $table->string("deal_id")->nullable();
             $table->string("category_id");
             $table->uuid("item_uuid")->unique();

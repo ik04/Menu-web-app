@@ -15,13 +15,6 @@ use Ramsey\Uuid\Uuid;
 
 class OrderController extends Controller
 {
-    public function getActualItemId($item_uuid){
-
-        $actualItemId = Item::select("item_uuid","id")->where("item_uuid",$item_uuid)->first()->id;
-        return $actualItemId;
-
-    }
-   
     public function addOrder(Request $request){
         $validation = Validator::make($request->all(),[
             "item_uuid" => "required|uuid",
@@ -54,6 +47,13 @@ class OrderController extends Controller
         ]);
         return response()->json(["order_uuid"=>$order->order_uuid,"message"=>"order has been created!"],201);
     }
+    public function getActualItemId($item_uuid){
+
+        $actualItemId = Item::select("item_uuid","id")->where("item_uuid",$item_uuid)->first()->id;
+        return $actualItemId;
+
+    }
+   
 
     public function priceOfOrder($orderId){
         $order = Order::where("id",$orderId)->first();
@@ -90,7 +90,8 @@ class OrderController extends Controller
         if(!$order = Order::where("order_uuid",$validated["order_uuid"])->exists()){
             return response()->json(["error"=>"Order not found"],400);
         }
-        $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
+        $order = Order::join("items","orders.item_id","=","items.id")->where("order_uuid",$validated["order_uuid"])->select("quantity","total_price","status","order_uuid","items.price","orders.id")->first();
+        // $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
 
         $currentQuantity = $order->quantity;
         $order->quantity = $currentQuantity + 1;
@@ -98,6 +99,7 @@ class OrderController extends Controller
         $totalPrice = $this->priceOfOrder($order->id);
         $order->total_price = $totalPrice;
         $order->save();
+        $order->id = null;
 
         return response()->json(["order" => $order, "message" => "Order Quantity updated!"],200);
         
@@ -112,7 +114,8 @@ class OrderController extends Controller
             return response()->json(["error"=>"Order not found"],400);
         }
 
-        $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
+        $order = Order::join("items","orders.item_id","=","items.id")->where("order_uuid",$validated["order_uuid"])->select("quantity","total_price","status","order_uuid","items.price","orders.id")->first();
+        // $order = Order::where("order_uuid",$validated["order_uuid"])->first(); //! optimise query using select
 
         $currentQuantity = $order->quantity;
 
@@ -132,48 +135,21 @@ class OrderController extends Controller
     public function finishOrder(Request $request)
     {
         $userId = $request->user()->id;
-        $orders = Order::where("status", Status::PENDING->value)->where("user_id", $userId)->get();
-    
-        foreach ($orders as $order) {
-            $order->status = Status::COMPLETE->value; // Update the status to completed
-            $order->save();
-        }
-    
-        return response()->json(["message" => "Orders Completed!", "orders" => $orders], 200);
+        $orders = Order::join("items","orders.item_id","=","items.id")->select("order_uuid","quantity","total_price","name","image")->where("status", Status::PENDING->value)->where("user_id", $userId)->update(['status' => Status::COMPLETE->value]);
+        return response()->json(["message" => "Orders Completed!"], 200);
     }
-  
-    // public function finishOrder(Request $request) // * this function will run after payment or when the last button is pressed
-    // { // todo: make it accept multiple responses and make themm all complete
 
-    //     $requestData = $request->all();
-
-    //     if (!isset($requestData['orders'])) {
-    //         return response()->json(['message' => 'Invalid request data. Missing "orders" key.'], 400);
-    //     }
-
-    //     $validation = Validator::make($request->all(), [
-    //         "orders.*.order_uuid" => "required|uuid",
-    //     ]);
-    //     $validated = $validation->validated();
-
-    //     $orders = [];
-
-    //     foreach ($validated['orders'] as $checkedoutOrder) {
-    //         $order = Order::where("order_uuid", $checkedoutOrder["order_uuid"])->first();
-    //             $order->status = Status::COMPLETE->value;
-    //             $order->save();
-
-    //             $orders[] = $order;
-    //     }
-    //     return response()->json(["message"=>"Orders Completed!","orders"=>$orders],200);
-
-    // }
+    public function getOrderCount(Request $request){
+        $userId = $request->user()->id;
+        $orderCount = Order::where("status", Status::PENDING->value)->where("user_id", $userId)->count();
+        return response()->json(["message" => "Orders Count", "order_count" => $orderCount], 200);
+    }
     
     
     public function getUserPendingOrders(Request $request){
         $userId = $request->user()->id;
 
-        $orders = Order::join("items","orders.item_id","=","items.id")->select("order_uuid","quantity","status","total_price","item_uuid","name","image")->where("user_id",$userId)->where("status",Status::PENDING)->get(); // todo: make it a join query
+        $orders = Order::join("items","orders.item_id","=","items.id")->select("order_uuid","quantity","status","total_price","item_uuid","name","image")->where("user_id",$userId)->where("status",Status::PENDING)->get(); 
         return response()->json(["orders" => $orders,"message" => "pending orders"],200);
         
     }

@@ -1,48 +1,40 @@
-"use client";
-import { OrderContext } from "@/contexts/OrderContext";
-import Image from "next/image";
-import React, { useContext, useEffect } from "react";
-import { OrderButton } from "../components/OrderButton";
-import { useRouter } from "next/navigation";
+import React from "react";
+import CheckoutMenu from "../components/CheckoutMenu";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import axios from "axios";
 
-export default function page() {
-  const { orders, ordersCount } = useContext(OrderContext);
-  const router = useRouter();
-  console.log(ordersCount);
-  useEffect(() => {
-    if (ordersCount === 0) {
-      router.push("/");
+export default async function page() {
+  try {
+    const cookieStore = cookies();
+    const authToken = cookieStore.get("at");
+    console.log(authToken?.value);
+    const url = `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/api/v1/get-user-data`;
+    const resp = await axios.get(url, {
+      headers: { Cookie: `at=${authToken?.value}` },
+    });
+
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${resp.data.access_token}`;
+
+    const url1 = `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/api/v1/is-logged-in`;
+    const resp1 = await axios.post(url1, {}, { withCredentials: true });
+    console.log(resp1);
+    console.log("works");
+    const url2 = `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/api/v1/get-order-count`;
+    const resp2 = await axios.get(url2, { withCredentials: true });
+    console.log(resp2);
+    if (resp2.data.order_count === 0) {
+      return redirect("/");
     }
-  }, [ordersCount]);
+  } catch (error) {
+    console.log(error);
+    return redirect("/");
+  }
   return (
-    <div className="overflow-hidden">
-      <div className="translate-y-24 font-mono font-bold text-hotorange text-4xl text-center">
-        Checkout
-      </div>
-      <div className="h-screen flex justify-center items-center translate-y-24">
-        <div className="flex-col bg-white border border-black">
-          <p className="uppercase font-mono text-2xl text-center">Bill</p>
-          {orders.map((order, index) => {
-            if (order.quantity != 0)
-              return (
-                <div
-                  key={index}
-                  className="text-black text-xl p-5 items-center flex space-x-5"
-                >
-                  <Image
-                    src={`http://localhost:8000${order.image}`}
-                    alt="order img"
-                    className=""
-                    width={100}
-                    height={100}
-                  />
-                  <p>{order.name}</p>
-                  <OrderButton orderMode={false} itemUuid={order.item_uuid} />
-                </div>
-              );
-          })}
-        </div>
-      </div>
+    <div className="">
+      <CheckoutMenu />
     </div>
   );
 }

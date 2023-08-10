@@ -7,4 +7,6 @@ export const OrderContext = createContext<OrderContextValue>({
   setOrders: () => {},
   ordersCount: 0,
   setOrdersCount: () => {},
+  orderTotalPrice: 0,
+  setOrderTotalPrice: () => {},
 });
